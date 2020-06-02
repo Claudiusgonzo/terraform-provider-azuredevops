@@ -1,4 +1,4 @@
-package azuredevops
+package git
 
 import (
 	"crypto/sha1"
@@ -9,15 +9,15 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/datahelper"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
-func dataGitRepositories() *schema.Resource {
+func DataGitRepositories() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceGitRepositoriesRead,
 		Schema: map[string]*schema.Schema{

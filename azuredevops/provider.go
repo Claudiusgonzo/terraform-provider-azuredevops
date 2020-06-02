@@ -4,6 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/git"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/policy"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/taskagent"
@@ -24,7 +25,7 @@ func Provider() *schema.Provider {
 			"azuredevops_serviceendpoint_dockerregistry": serviceendpoint.ResourceServiceEndpointDockerRegistry(),
 			"azuredevops_serviceendpoint_github":         serviceendpoint.ResourceServiceEndpointGitHub(),
 			"azuredevops_serviceendpoint_kubernetes":     serviceendpoint.ResourceServiceEndpointKubernetes(),
-			"azuredevops_git_repository":                 resourceGitRepository(),
+			"azuredevops_git_repository":                 git.ResourceGitRepository(),
 			"azuredevops_user_entitlement":               resourceUserEntitlement(),
 			"azuredevops_group_membership":               resourceGroupMembership(),
 			"azuredevops_agent_pool":                     taskagent.ResourceAgentPool(),
@@ -38,7 +39,7 @@ func Provider() *schema.Provider {
 			"azuredevops_group":            dataGroup(),
 			"azuredevops_project":          dataProject(),
 			"azuredevops_projects":         dataProjects(),
-			"azuredevops_git_repositories": dataGitRepositories(),
+			"azuredevops_git_repositories": git.DataGitRepositories(),
 			"azuredevops_users":            dataUsers(),
 		},
 		Schema: map[string]*schema.Schema{

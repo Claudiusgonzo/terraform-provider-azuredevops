@@ -1,7 +1,7 @@
 // +build all core data_sources data_git_repositories
 // +build !exclude_data_sources !exclude_data_git_repositories
 
-package azuredevops
+package git
 
 import (
 	"context"
@@ -101,7 +101,7 @@ func TestGitRepositoriesDataSource_Read_TestHandleError(t *testing.T) {
 		Return(nil, errors.New("GetRepositories() Failed")).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataGitRepositories().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGitRepositories().Schema, nil)
 
 	err := dataSourceGitRepositoriesRead(resourceData, clients)
 	require.NotNil(t, err)
@@ -134,7 +134,7 @@ func TestGitRepositoriesDataSource_Read_TestHandleErrorWithSpecificRepository(t 
 		GetRepository(clients.Ctx, expectedGetRepositoryArgs).
 		Return(nil, errors.New("GetRepository() Failed"))
 
-	resourceData := schema.TestResourceDataRaw(t, dataGitRepositories().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGitRepositories().Schema, nil)
 	resourceData.Set("name", *repo.Name)
 	resourceData.Set("project_id", repo.Project.Id.String())
 
@@ -169,7 +169,7 @@ func TestGitRepositoriesDataSource_Read_NoRepositories(t *testing.T) {
 		Return(&[]git.GitRepository{}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataGitRepositories().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGitRepositories().Schema, nil)
 
 	err := dataSourceGitRepositoriesRead(resourceData, clients)
 	require.Nil(t, err)
@@ -201,7 +201,7 @@ func TestGitRepositoriesDataSource_Read_AllRepositories(t *testing.T) {
 		Return(&gitRepoList, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataGitRepositories().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGitRepositories().Schema, nil)
 
 	err := dataSourceGitRepositoriesRead(resourceData, clients)
 	require.Nil(t, err)
@@ -237,7 +237,7 @@ func TestGitRepositoriesDataSource_Read_AllRepositoriesByProject(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataGitRepositories().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGitRepositories().Schema, nil)
 	resourceData.Set("project_id", azProjectRef.Id.String())
 
 	err := dataSourceGitRepositoriesRead(resourceData, clients)
@@ -282,7 +282,7 @@ func TestGitRepositoriesDataSource_Read_SingleRepository(t *testing.T) {
 		GetRepository(clients.Ctx, expectedGetRepositoryArgs).
 		Return(&repo, nil)
 
-	resourceData := schema.TestResourceDataRaw(t, dataGitRepositories().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGitRepositories().Schema, nil)
 	resourceData.Set("name", *repo.Name)
 	resourceData.Set("project_id", repo.Project.Id.String())
 

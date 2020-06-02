@@ -1,7 +1,7 @@
 // +build all core resource_git_repository
 // +build !exclude_resource_git_repository
 
-package azuredevops
+package git
 
 import (
 	"context"
@@ -41,7 +41,7 @@ func TestGitRepo_Create_DoesNotSwallowErrorFromFailedCreateCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId(testGitRepository.Id.String())
 	flattenGitRepository(resourceData, &testGitRepository)
 	configureCleanInitialization(resourceData)
@@ -73,7 +73,7 @@ func TestGitRepo_Update_DoesNotSwallowErrorFromFailedCreateCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId(testGitRepository.Id.String())
 	flattenGitRepository(resourceData, &testGitRepository)
 	configureCleanInitialization(resourceData)
@@ -109,7 +109,7 @@ func TestGitRepo_FlattenExpand_RoundTrip(t *testing.T) {
 	repoName := "name"
 	gitRepo := git.GitRepository{Id: &repoID, Name: &repoName, Project: &project}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId(gitRepo.Id.String())
 	flattenGitRepository(resourceData, &gitRepo)
 
@@ -132,7 +132,7 @@ func TestGitRepo_FlattenExpandInitialization_RoundTrip(t *testing.T) {
 	repoName := "name"
 	gitRepo := git.GitRepository{Id: &repoID, Name: &repoName, Project: &project}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId(gitRepo.Id.String())
 	flattenGitRepository(resourceData, &gitRepo)
 	configureCleanInitialization(resourceData)
@@ -163,7 +163,7 @@ func TestGitRepo_Read_DoesNotSwallowErrorFromFailedReadCall(t *testing.T) {
 		Ctx:            context.Background(),
 	}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId("an-id")
 	resourceData.Set("project_id", "a-project")
 
@@ -189,7 +189,7 @@ func TestGitRepo_Read_UsesIdIfSet(t *testing.T) {
 		Ctx:            context.Background(),
 	}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId("an-id")
 	resourceData.Set("project_id", "a-project")
 
@@ -204,7 +204,7 @@ func TestGitRepo_Read_UsesIdIfSet(t *testing.T) {
 }
 
 func TestGitRepo_Delete_ChecksForValidUUID(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.SetId("not-a-uuid-id")
 
 	err := resourceGitRepositoryDelete(resourceData, &client.AggregatedClient{})
@@ -222,7 +222,7 @@ func TestGitRepo_Delete_DoesNotSwallowErrorFromFailedDeleteCall(t *testing.T) {
 		Ctx:            context.Background(),
 	}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	id := uuid.New()
 	resourceData.SetId(id.String())
 
@@ -248,7 +248,7 @@ func TestGitRepo_Read_UsesNameIfIdNotSet(t *testing.T) {
 		Ctx:            context.Background(),
 	}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceGitRepository().Schema, nil)
 	resourceData.Set("name", "a-name")
 	resourceData.Set("project_id", "a-project")
 

@@ -1,4 +1,4 @@
-package azuredevops
+package git
 
 import (
 	"fmt"
@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -37,7 +37,7 @@ var RepoInitTypeValues = repoInitTypeValuesType{
 	Import:        "Import",
 }
 
-func resourceGitRepository() *schema.Resource {
+func ResourceGitRepository() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGitRepositoryCreate,
 		Read:   resourceGitRepositoryRead,
