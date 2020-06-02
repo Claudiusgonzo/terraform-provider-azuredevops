@@ -15,7 +15,7 @@ const (
 )
 
 func ResourceServiceEndpointGitHub() *schema.Resource {
-	r := genBaseServiceEndpointResource(flattenServiceEndpointGitHub, expandServiceEndpointGitHub, parseImportedProjectIDAndServiceEndpointID)
+	r := genBaseServiceEndpointResource(flattenServiceEndpointGitHub, expandServiceEndpointGitHub)
 	authPersonal := &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			personalAccessToken: {

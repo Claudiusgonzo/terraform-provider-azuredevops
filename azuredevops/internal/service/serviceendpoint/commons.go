@@ -19,29 +19,17 @@ const errMsgTfConfigRead = "Error reading terraform configuration: %+v"
 
 type flatFunc func(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string)
 type expandFunc func(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error)
-type importFunc func(clients *client.AggregatedClient, id string) (string, string, error)
 
 // genBaseServiceEndpointResource creates a Resource with the common parts
 // that all Service Endpoints require.
-func genBaseServiceEndpointResource(f flatFunc, e expandFunc, i importFunc) *schema.Resource {
+func genBaseServiceEndpointResource(f flatFunc, e expandFunc) *schema.Resource {
 	return &schema.Resource{
-		Create: genServiceEndpointCreateFunc(f, e),
-		Read:   genServiceEndpointReadFunc(f),
-		Update: genServiceEndpointUpdateFunc(f, e),
-		Delete: genServiceEndpointDeleteFunc(e),
-		Importer: &schema.ResourceImporter{
-			State: func(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-				projectID, serviceEndpointID, err := i(meta.(*client.AggregatedClient), d.Id())
-				if err != nil {
-					return nil, fmt.Errorf("Error parsing the variable service endpoint ID from the Terraform resource data:  %v", err)
-				}
-				d.Set("project_id", projectID)
-				d.SetId(serviceEndpointID)
-
-				return []*schema.ResourceData{d}, nil
-			},
-		},
-		Schema: genBaseSchema(),
+		Create:   genServiceEndpointCreateFunc(f, e),
+		Read:     genServiceEndpointReadFunc(f),
+		Update:   genServiceEndpointUpdateFunc(f, e),
+		Delete:   genServiceEndpointDeleteFunc(e),
+		Importer: tfhelper.ImportProjectQualifiedResourceUUID(),
+		Schema:   genBaseSchema(),
 	}
 }
 

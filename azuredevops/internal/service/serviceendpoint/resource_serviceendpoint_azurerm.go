@@ -11,7 +11,7 @@ import (
 )
 
 func ResourceServiceEndpointAzureRM() *schema.Resource {
-	r := genBaseServiceEndpointResource(flattenServiceEndpointAzureRM, expandServiceEndpointAzureRM, parseImportedProjectIDAndServiceEndpointID)
+	r := genBaseServiceEndpointResource(flattenServiceEndpointAzureRM, expandServiceEndpointAzureRM)
 	makeUnprotectedSchema(r, "azurerm_spn_tenantid", "ARM_TENANT_ID", "The service principal tenant id which should be used.")
 	makeUnprotectedSchema(r, "azurerm_subscription_id", "ARM_SUBSCRIPTION_ID", "The Azure subscription Id which should be used.")
 	makeUnprotectedSchema(r, "azurerm_subscription_name", "ARM_SUBSCRIPTION_NAME", "The Azure subscription name which should be used.")

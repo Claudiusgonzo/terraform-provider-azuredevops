@@ -3,15 +3,13 @@ package serviceendpoint
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
 func ResourceServiceEndpointDockerRegistry() *schema.Resource {
-	r := genBaseServiceEndpointResource(flattenServiceEndpointDockerRegistry, expandServiceEndpointDockerRegistry, parseImportedProjectIDAndServiceEndpointID)
+	r := genBaseServiceEndpointResource(flattenServiceEndpointDockerRegistry, expandServiceEndpointDockerRegistry)
 	r.Schema["docker_registry"] = &schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,
@@ -82,23 +80,4 @@ func flattenServiceEndpointDockerRegistry(d *schema.ResourceData, serviceEndpoin
 	tfhelper.HelpFlattenSecret(d, "docker_password")
 	d.Set("docker_password", (*serviceEndpoint.Authorization.Parameters)["password"])
 	d.Set("registry_type", (*serviceEndpoint.Data)["registrytype"])
-}
-
-// parseImportedProjectIDAndServiceEndpointID : Parse the Id (projectId/serviceEndpointId) or (projectName/serviceEndpointId)
-func parseImportedProjectIDAndServiceEndpointID(clients *client.AggregatedClient, id string) (string, string, error) {
-	project, resourceID, err := tfhelper.ParseImportedUUID(id)
-	if err != nil {
-		return "", "", err
-	}
-
-	currentProject, err := clients.CoreClient.GetProject(clients.Ctx, core.GetProjectArgs{
-		ProjectId:           &project,
-		IncludeCapabilities: converter.Bool(true),
-		IncludeHistory:      converter.Bool(false),
-	})
-	if err != nil {
-		return "", "", err
-	}
-
-	return currentProject.Id.String(), resourceID, nil
 }
