@@ -26,7 +26,7 @@ var testRepoID = uuid.New()
 // This definition matches the overall structure of what a configured git repository would
 // look like. Note that the ID and Name attributes match -- this is the service-side behavior
 // when configuring a GitHub repo.
-var testAzureGitRepository = git.GitRepository{
+var testGitRepository = git.GitRepository{
 	Id:   &testRepoID,
 	Name: converter.String("RepoName"),
 	Project: &core.TeamProjectReference{
@@ -37,13 +37,13 @@ var testAzureGitRepository = git.GitRepository{
 
 // verifies that the create operation is considered failed if the initial API
 // call fails.
-func TestAzureGitRepo_Create_DoesNotSwallowErrorFromFailedCreateCall(t *testing.T) {
+func TestGitRepo_Create_DoesNotSwallowErrorFromFailedCreateCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
-	resourceData.SetId(testAzureGitRepository.Id.String())
-	flattenGitRepository(resourceData, &testAzureGitRepository)
+	resourceData.SetId(testGitRepository.Id.String())
+	flattenGitRepository(resourceData, &testGitRepository)
 	configureCleanInitialization(resourceData)
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
@@ -51,7 +51,7 @@ func TestAzureGitRepo_Create_DoesNotSwallowErrorFromFailedCreateCall(t *testing.
 
 	expectedArgs := git.CreateRepositoryArgs{
 		GitRepositoryToCreate: &git.GitRepositoryCreateOptions{
-			Name: testAzureGitRepository.Name,
+			Name: testGitRepository.Name,
 			Project: &core.TeamProjectReference{
 				Id: &testRepoProjectID,
 			},
@@ -60,22 +60,22 @@ func TestAzureGitRepo_Create_DoesNotSwallowErrorFromFailedCreateCall(t *testing.
 	reposClient.
 		EXPECT().
 		CreateRepository(clients.Ctx, expectedArgs).
-		Return(nil, errors.New("CreateAzureGitRepository() Failed")).
+		Return(nil, errors.New("CreateGitRepository() Failed")).
 		Times(1)
 
 	err := resourceGitRepositoryCreate(resourceData, clients)
-	require.Regexp(t, ".*CreateAzureGitRepository\\(\\) Failed$", err.Error())
+	require.Regexp(t, ".*CreateGitRepository\\(\\) Failed$", err.Error())
 }
 
 // verifies that the update operation is considered failed if the initial API
 // call fails.
-func TestAzureGitRepo_Update_DoesNotSwallowErrorFromFailedCreateCall(t *testing.T) {
+func TestGitRepo_Update_DoesNotSwallowErrorFromFailedCreateCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
-	resourceData.SetId(testAzureGitRepository.Id.String())
-	flattenGitRepository(resourceData, &testAzureGitRepository)
+	resourceData.SetId(testGitRepository.Id.String())
+	flattenGitRepository(resourceData, &testGitRepository)
 	configureCleanInitialization(resourceData)
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
@@ -84,11 +84,11 @@ func TestAzureGitRepo_Update_DoesNotSwallowErrorFromFailedCreateCall(t *testing.
 	reposClient.
 		EXPECT().
 		UpdateRepository(clients.Ctx, gomock.Any()).
-		Return(nil, errors.New("UpdateAzureGitRepository() Failed")).
+		Return(nil, errors.New("UpdateGitRepository() Failed")).
 		Times(1)
 
 	err := resourceGitRepositoryUpdate(resourceData, clients)
-	require.Regexp(t, ".*UpdateAzureGitRepository\\(\\) Failed$", err.Error())
+	require.Regexp(t, ".*UpdateGitRepository\\(\\) Failed$", err.Error())
 }
 
 func configureCleanInitialization(d *schema.ResourceData) {
@@ -101,7 +101,7 @@ func configureCleanInitialization(d *schema.ResourceData) {
 
 // verifies that a round-trip flatten/expand sequence will not result in data loss of non-computed properties.
 //	Note: there is no need to expand computed properties, so they won't be tested here.
-func TestAzureGitRepo_FlattenExpand_RoundTrip(t *testing.T) {
+func TestGitRepo_FlattenExpand_RoundTrip(t *testing.T) {
 	projectID := uuid.New()
 	project := core.TeamProjectReference{Id: &projectID}
 
@@ -124,7 +124,7 @@ func TestAzureGitRepo_FlattenExpand_RoundTrip(t *testing.T) {
 	require.Nil(t, repoInitialization)
 }
 
-func TestAzureGitRepo_FlattenExpandInitialization_RoundTrip(t *testing.T) {
+func TestGitRepo_FlattenExpandInitialization_RoundTrip(t *testing.T) {
 	projectID := uuid.New()
 	project := core.TeamProjectReference{Id: &projectID}
 
@@ -153,7 +153,7 @@ func TestAzureGitRepo_FlattenExpandInitialization_RoundTrip(t *testing.T) {
 
 // verifies that the read operation is considered failed if the initial API
 // call fails.
-func TestAzureGitRepo_Read_DoesNotSwallowErrorFromFailedReadCall(t *testing.T) {
+func TestGitRepo_Read_DoesNotSwallowErrorFromFailedReadCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -179,7 +179,7 @@ func TestAzureGitRepo_Read_DoesNotSwallowErrorFromFailedReadCall(t *testing.T) {
 }
 
 // verifies that the resource ID is used for reads if the ID is set
-func TestAzureGitRepo_Read_UsesIdIfSet(t *testing.T) {
+func TestGitRepo_Read_UsesIdIfSet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -203,7 +203,7 @@ func TestAzureGitRepo_Read_UsesIdIfSet(t *testing.T) {
 	resourceGitRepositoryRead(resourceData, clients)
 }
 
-func TestAzureGitRepo_Delete_ChecksForValidUUID(t *testing.T) {
+func TestGitRepo_Delete_ChecksForValidUUID(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
 	resourceData.SetId("not-a-uuid-id")
 
@@ -212,7 +212,7 @@ func TestAzureGitRepo_Delete_ChecksForValidUUID(t *testing.T) {
 	require.Contains(t, err.Error(), "Invalid repositoryId UUID")
 }
 
-func TestAzureGitRepo_Delete_DoesNotSwallowErrorFromFailedDeleteCall(t *testing.T) {
+func TestGitRepo_Delete_DoesNotSwallowErrorFromFailedDeleteCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -238,7 +238,7 @@ func TestAzureGitRepo_Delete_DoesNotSwallowErrorFromFailedDeleteCall(t *testing.
 }
 
 // verifies that the name is used for reads if the ID is not set
-func TestAzureGitRepo_Read_UsesNameIfIdNotSet(t *testing.T) {
+func TestGitRepo_Read_UsesNameIfIdNotSet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
