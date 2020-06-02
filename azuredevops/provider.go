@@ -4,6 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/core"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/git"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/graph"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/policy"
@@ -19,7 +20,7 @@ func Provider() *schema.Provider {
 			"azuredevops_branch_policy_build_validation": policy.ResourceBranchPolicyBuildValidation(),
 			"azuredevops_branch_policy_min_reviewers":    policy.ResourceBranchPolicyMinReviewers(),
 			"azuredevops_build_definition":               resourceBuildDefinition(),
-			"azuredevops_project":                        resourceProject(),
+			"azuredevops_project":                        core.ResourceProject(),
 			"azuredevops_variable_group":                 taskagent.ResourceVariableGroup(),
 			"azuredevops_serviceendpoint_azurerm":        serviceendpoint.ResourceServiceEndpointAzureRM(),
 			"azuredevops_serviceendpoint_bitbucket":      serviceendpoint.ResourceServiceEndpointBitBucket(),
@@ -38,8 +39,8 @@ func Provider() *schema.Provider {
 			"azuredevops_agent_pools":      taskagent.DataAgentPools(),
 			"azuredevops_client_config":    service.DataClientConfig(),
 			"azuredevops_group":            graph.DataGroup(),
-			"azuredevops_project":          dataProject(),
-			"azuredevops_projects":         dataProjects(),
+			"azuredevops_project":          core.DataProject(),
+			"azuredevops_projects":         core.DataProjects(),
 			"azuredevops_git_repositories": git.DataGitRepositories(),
 			"azuredevops_users":            graph.DataUsers(),
 		},

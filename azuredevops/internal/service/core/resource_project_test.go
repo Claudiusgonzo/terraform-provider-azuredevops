@@ -1,7 +1,7 @@
 // +build all core resource_project
 // +build !exclude_resource_project
 
-package azuredevops
+package core
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -200,7 +200,7 @@ func TestAzureDevOpsProject_FlattenExpand_RoundTrip(t *testing.T) {
 		Return(&expectedProcesses[0], nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceProject().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceProject().Schema, nil)
 	err := flattenProject(clients, resourceData, &testProject)
 	require.Nil(t, err)
 

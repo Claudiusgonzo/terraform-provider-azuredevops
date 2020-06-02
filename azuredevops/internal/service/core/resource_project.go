@@ -1,4 +1,4 @@
-package azuredevops
+package core
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ import (
 var projectCreateTimeoutDuration time.Duration = 60 * 3
 var projectDeleteTimeoutDuration time.Duration = 60
 
-func resourceProject() *schema.Resource {
+func ResourceProject() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceProjectCreate,
 		Read:   resourceProjectRead,

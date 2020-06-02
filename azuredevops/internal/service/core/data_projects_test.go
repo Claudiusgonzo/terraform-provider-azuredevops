@@ -1,7 +1,7 @@
 // +build all core data_sources resource_project data_project
 // +build !data_sources !exclude_data_project
 
-package azuredevops
+package core
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -109,7 +109,7 @@ func TestDataSourceProjects_Read_TestFindProjectByName(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	resourceData.Set("project_name", "vsteam-0178")
 	resourceData.Set("state", "wellFormed")
 	err := dataSourceProjectsRead(resourceData, clients)
@@ -149,7 +149,7 @@ func TestDataSourceProjects_Read_TestEmptyProjectList(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	err := dataSourceProjectsRead(resourceData, clients)
 	require.Nil(t, err)
 	require.Equal(t, "all", resourceData.Get("state").(string))
@@ -182,7 +182,7 @@ func TestDataSourceProjects_Read_TestFindAllProjects(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	err := dataSourceProjectsRead(resourceData, clients)
 	require.Nil(t, err)
 	require.Equal(t, "all", resourceData.Get("state").(string))
@@ -215,7 +215,7 @@ func TestDataSourceProjects_Read_TestDuplicateProjectId(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	err := dataSourceProjectsRead(resourceData, clients)
 	require.Nil(t, err)
 	require.Equal(t, "all", resourceData.Get("state").(string))
@@ -248,7 +248,7 @@ func TestDataSourceProjects_Read_TestFindProjectsWithState(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	resourceData.Set("state", "wellFormed")
 	err := dataSourceProjectsRead(resourceData, clients)
 	require.Nil(t, err)
@@ -279,7 +279,7 @@ func TestDataSourceProjects_Read_TestHandleError(t *testing.T) {
 		Return(nil, errors.New("GetProjects() Failed")).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	err := dataSourceProjectsRead(resourceData, clients)
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "GetProjects() Failed")
@@ -321,7 +321,7 @@ func TestDataSourceProjects_Read_TestContinuationToken(t *testing.T) {
 
 	gomock.InOrder(calls...)
 
-	resourceData := schema.TestResourceDataRaw(t, dataProjects().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataProjects().Schema, nil)
 	err := dataSourceProjectsRead(resourceData, clients)
 	require.Nil(t, err)
 	require.Equal(t, "all", resourceData.Get("state").(string))

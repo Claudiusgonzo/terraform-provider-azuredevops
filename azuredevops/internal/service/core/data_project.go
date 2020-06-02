@@ -1,4 +1,4 @@
-package azuredevops
+package core
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
 )
 
-func dataProject() *schema.Resource {
-	baseSchema := resourceProject()
+func DataProject() *schema.Resource {
+	baseSchema := ResourceProject()
 	for k, v := range baseSchema.Schema {
 		if k != "project_name" {
 			baseSchema.Schema[k] = &schema.Schema{

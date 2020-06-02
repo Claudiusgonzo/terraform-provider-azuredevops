@@ -44,7 +44,7 @@ func TestAccProject_DataSource(t *testing.T) {
 
 func TestAccProject_DataSource_IncorrectParameters(t *testing.T) {
 	projectName := testutils.GenerateResourceName()
-	dataProject := fmt.Sprintf(`
+	DataProject := fmt.Sprintf(`
 	data "azuredevops_project" "project" {
 		project_name = "%s"
 		description = "A project description"
@@ -57,7 +57,7 @@ func TestAccProject_DataSource_IncorrectParameters(t *testing.T) {
 		Providers: testutils.GetProviders(),
 		Steps: []resource.TestStep{
 			{
-				Config:      dataProject,
+				Config:      DataProject,
 				ExpectError: errorRegex,
 			},
 		},
