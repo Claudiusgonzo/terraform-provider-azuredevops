@@ -1,7 +1,6 @@
 package serviceendpoint
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -90,20 +89,6 @@ func doBaseFlattening(d *schema.ResourceData, serviceEndpoint *serviceendpoint.S
 	d.Set("authorization", &map[string]interface{}{
 		"scheme": *serviceEndpoint.Authorization.Scheme,
 	})
-}
-
-// getScheme allows you to get the nested scheme value
-func getScheme(d *schema.ResourceData) (string, error) {
-	authorization := d.Get("authorization").(*schema.Set)
-	if authorization == nil {
-		return "", errors.New("authorization not set")
-	}
-	authorizationList := authorization.List()
-	if len(authorizationList) != 1 {
-		return "", errors.New("authorization is invalid")
-	}
-	scheme := authorizationList[0].(map[string]interface{})["scheme"].(string)
-	return scheme, nil
 }
 
 // makeProtectedSchema create protected schema
