@@ -2,7 +2,7 @@ package azuredevops
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 )
 
 // Provider - The top level Azure DevOps Provider definition.
@@ -68,7 +68,7 @@ func providerConfigure(p *schema.Provider) schema.ConfigureFunc {
 			terraformVersion = "0.11+compatible"
 		}
 
-		client, err := config.GetAzdoClient(d.Get("personal_access_token").(string), d.Get("org_service_url").(string), terraformVersion)
+		client, err := client.GetAzdoClient(d.Get("personal_access_token").(string), d.Get("org_service_url").(string), terraformVersion)
 
 		return client, err
 	}

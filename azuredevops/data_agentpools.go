@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 )
 
 func dataAzureAgentPools() *schema.Resource {
@@ -43,7 +43,7 @@ func dataAzureAgentPools() *schema.Resource {
 }
 
 func dataSourceAgentPoolsRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	agentPools, err := getAgentPools(clients)
 	if err != nil {
@@ -91,6 +91,6 @@ func flattenAgentPoolReferences(input *[]taskagent.TaskAgentPool) []interface{} 
 	return results
 }
 
-func getAgentPools(clients *config.AggregatedClient) (*[]taskagent.TaskAgentPool, error) {
+func getAgentPools(clients *client.AggregatedClient) (*[]taskagent.TaskAgentPool, error) {
 	return clients.TaskAgentClient.GetAgentPools(clients.Ctx, taskagent.GetAgentPoolsArgs{})
 }

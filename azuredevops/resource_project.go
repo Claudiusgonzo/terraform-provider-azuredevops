@@ -13,11 +13,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/operations"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 var projectCreateTimeoutDuration time.Duration = 60 * 3
@@ -83,7 +83,7 @@ func resourceProject() *schema.Resource {
 }
 
 func resourceProjectCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	project, err := expandProject(clients, d, true)
 	if err != nil {
 		return fmt.Errorf("Error converting terraform data model to Azure DevOps project reference: %+v", err)
@@ -99,7 +99,7 @@ func resourceProjectCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 // Make API call to create the project and wait for an async success/fail response from the service
-func createProject(clients *config.AggregatedClient, project *core.TeamProject, timeoutSeconds time.Duration) error {
+func createProject(clients *client.AggregatedClient, project *core.TeamProject, timeoutSeconds time.Duration) error {
 	operationRef, err := clients.CoreClient.QueueCreateProject(clients.Ctx, core.QueueCreateProjectArgs{ProjectToCreate: project})
 	if err != nil {
 		return err
@@ -108,7 +108,7 @@ func createProject(clients *config.AggregatedClient, project *core.TeamProject, 
 	return waitForAsyncOperationSuccess(clients, operationRef, timeoutSeconds)
 }
 
-func waitForAsyncOperationSuccess(clients *config.AggregatedClient, operationRef *operations.OperationReference, timeoutSeconds time.Duration) error {
+func waitForAsyncOperationSuccess(clients *client.AggregatedClient, operationRef *operations.OperationReference, timeoutSeconds time.Duration) error {
 	timeout := time.After(timeoutSeconds * time.Second)
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
@@ -144,7 +144,7 @@ func waitForAsyncOperationSuccess(clients *config.AggregatedClient, operationRef
 }
 
 func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	id := d.Id()
 	name := d.Get("project_name").(string)
 
@@ -167,7 +167,7 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 // ProjectRead Lookup a project using the ID, or name if the ID is not set. Note, usage of the name in place
 // of the ID is an explicitly stated supported behavior:
 //		https://docs.microsoft.com/en-us/rest/api/azure/devops/core/projects/get?view=azure-devops-rest-5.0
-func ProjectRead(clients *config.AggregatedClient, projectID string, projectName string) (*core.TeamProject, error) {
+func ProjectRead(clients *client.AggregatedClient, projectID string, projectName string) (*core.TeamProject, error) {
 	identifier := projectID
 	if identifier == "" {
 		identifier = projectName
@@ -181,7 +181,7 @@ func ProjectRead(clients *config.AggregatedClient, projectID string, projectName
 }
 
 func resourceProjectUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	project, err := expandProject(clients, d, false)
 	if err != nil {
 		return fmt.Errorf("Error converting terraform data model to AzDO project reference: %+v", err)
@@ -194,7 +194,7 @@ func resourceProjectUpdate(d *schema.ResourceData, m interface{}) error {
 	return resourceProjectRead(d, m)
 }
 
-func updateProject(clients *config.AggregatedClient, project *core.TeamProject, timeoutSeconds time.Duration) error {
+func updateProject(clients *client.AggregatedClient, project *core.TeamProject, timeoutSeconds time.Duration) error {
 	operationRef, err := clients.CoreClient.UpdateProject(
 		clients.Ctx,
 		core.UpdateProjectArgs{
@@ -210,7 +210,7 @@ func updateProject(clients *config.AggregatedClient, project *core.TeamProject, 
 }
 
 func resourceProjectDelete(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	id := d.Id()
 
 	err := deleteProject(clients, id, projectDeleteTimeoutDuration)
@@ -221,7 +221,7 @@ func resourceProjectDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func deleteProject(clients *config.AggregatedClient, id string, timeoutSeconds time.Duration) error {
+func deleteProject(clients *client.AggregatedClient, id string, timeoutSeconds time.Duration) error {
 	uuid, err := uuid.Parse(id)
 	if err != nil {
 		return fmt.Errorf("Invalid project UUID: %s", id)
@@ -239,7 +239,7 @@ func deleteProject(clients *config.AggregatedClient, id string, timeoutSeconds t
 }
 
 // Convert internal Terraform data structure to an AzDO data structure
-func expandProject(clients *config.AggregatedClient, d *schema.ResourceData, forCreate bool) (*core.TeamProject, error) {
+func expandProject(clients *client.AggregatedClient, d *schema.ResourceData, forCreate bool) (*core.TeamProject, error) {
 	workItemTemplate := d.Get("work_item_template").(string)
 	processTemplateID, err := lookupProcessTemplateID(clients, workItemTemplate)
 	if err != nil {
@@ -278,7 +278,7 @@ func expandProject(clients *config.AggregatedClient, d *schema.ResourceData, for
 	return project, nil
 }
 
-func flattenProject(clients *config.AggregatedClient, d *schema.ResourceData, project *core.TeamProject) error {
+func flattenProject(clients *client.AggregatedClient, d *schema.ResourceData, project *core.TeamProject) error {
 	description := converter.ToString(project.Description, "")
 	processTemplateID := (*project.Capabilities)["processTemplate"]["templateTypeId"]
 	processTemplateName, err := lookupProcessTemplateName(clients, processTemplateID)
@@ -299,7 +299,7 @@ func flattenProject(clients *config.AggregatedClient, d *schema.ResourceData, pr
 }
 
 // given a process template name, get the process template ID
-func lookupProcessTemplateID(clients *config.AggregatedClient, templateName string) (string, error) {
+func lookupProcessTemplateID(clients *client.AggregatedClient, templateName string) (string, error) {
 	processes, err := clients.CoreClient.GetProcesses(clients.Ctx, core.GetProcessesArgs{})
 	if err != nil {
 		return "", err
@@ -316,7 +316,7 @@ func lookupProcessTemplateID(clients *config.AggregatedClient, templateName stri
 }
 
 // given a process template ID, get the process template name
-func lookupProcessTemplateName(clients *config.AggregatedClient, templateID string) (string, error) {
+func lookupProcessTemplateName(clients *client.AggregatedClient, templateID string) (string, error) {
 	id, err := uuid.Parse(templateID)
 	if err != nil {
 		return "", fmt.Errorf("Error parsing Work Item Template ID, got %s: %v", templateID, err)

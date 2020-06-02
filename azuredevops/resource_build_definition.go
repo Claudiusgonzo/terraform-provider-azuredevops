@@ -9,11 +9,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 // RepoType the type of the repository
@@ -295,7 +295,7 @@ func resourceBuildDefinition() *schema.Resource {
 }
 
 func resourceBuildDefinitionCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	err := validateServiceConnectionIDExistsIfNeeded(d)
 	if err != nil {
 		return err
@@ -371,7 +371,7 @@ func flattenBuildVariables(d *schema.ResourceData, buildDefinition *build.BuildD
 	return variables
 }
 
-func createBuildDefinition(clients *config.AggregatedClient, buildDefinition *build.BuildDefinition, project string) (*build.BuildDefinition, error) {
+func createBuildDefinition(clients *client.AggregatedClient, buildDefinition *build.BuildDefinition, project string) (*build.BuildDefinition, error) {
 	createdBuild, err := clients.BuildClient.CreateDefinition(clients.Ctx, build.CreateDefinitionArgs{
 		Definition: buildDefinition,
 		Project:    &project,
@@ -381,7 +381,7 @@ func createBuildDefinition(clients *config.AggregatedClient, buildDefinition *bu
 }
 
 func resourceBuildDefinitionRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	projectID, buildDefinitionID, err := tfhelper.ParseProjectIDAndResourceID(d)
 
 	if err != nil {
@@ -410,13 +410,13 @@ func resourceBuildDefinitionDelete(d *schema.ResourceData, m interface{}) error 
 		return nil
 	}
 
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	projectID, buildDefinitionID, err := tfhelper.ParseProjectIDAndResourceID(d)
 	if err != nil {
 		return err
 	}
 
-	err = clients.BuildClient.DeleteDefinition(m.(*config.AggregatedClient).Ctx, build.DeleteDefinitionArgs{
+	err = clients.BuildClient.DeleteDefinition(m.(*client.AggregatedClient).Ctx, build.DeleteDefinitionArgs{
 		Project:      &projectID,
 		DefinitionId: &buildDefinitionID,
 	})
@@ -425,7 +425,7 @@ func resourceBuildDefinitionDelete(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceBuildDefinitionUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	err := validateServiceConnectionIDExistsIfNeeded(d)
 	if err != nil {
 		return err
@@ -435,7 +435,7 @@ func resourceBuildDefinitionUpdate(d *schema.ResourceData, m interface{}) error 
 		return err
 	}
 
-	updatedBuildDefinition, err := clients.BuildClient.UpdateDefinition(m.(*config.AggregatedClient).Ctx, build.UpdateDefinitionArgs{
+	updatedBuildDefinition, err := clients.BuildClient.UpdateDefinition(m.(*client.AggregatedClient).Ctx, build.UpdateDefinitionArgs{
 		Definition:   buildDefinition,
 		Project:      &projectID,
 		DefinitionId: buildDefinition.Id,

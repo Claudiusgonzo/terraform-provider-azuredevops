@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,7 +24,7 @@ func TestDataSourceAgentPool_Read_TestAgentPoolNotFound(t *testing.T) {
 	defer ctrl.Finish()
 
 	taskAgentClient := azdosdkmocks.NewMockTaskagentClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		TaskAgentClient: taskAgentClient,
 		Ctx:             context.Background(),
 	}
@@ -50,7 +50,7 @@ func TestDataSourceAgentPool_Read_TestMultipleAgentPoolsFound(t *testing.T) {
 	defer ctrl.Finish()
 
 	taskAgentClient := azdosdkmocks.NewMockTaskagentClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		TaskAgentClient: taskAgentClient,
 		Ctx:             context.Background(),
 	}

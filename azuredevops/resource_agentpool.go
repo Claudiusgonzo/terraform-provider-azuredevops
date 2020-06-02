@@ -7,11 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 func resourceAzureAgentPool() *schema.Resource {
@@ -51,7 +51,7 @@ func resourceAzureAgentPool() *schema.Resource {
 }
 
 func resourceAzureAgentPoolCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	agentPool, err := expandAgentPool(d, true)
 	if err != nil {
 		return fmt.Errorf("Error converting terraform data model to AzDO agentPool reference: %+v", err)
@@ -73,7 +73,7 @@ func resourceAzureAgentPoolRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Error getting agent pool Id: %+v", err)
 	}
 
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	agentPool, err := azureAgentPoolRead(clients, poolID)
 	if err != nil {
 		if utils.ResponseWasNotFound(err) {
@@ -88,7 +88,7 @@ func resourceAzureAgentPoolRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceAzureAgentPoolUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	agentPool, err := expandAgentPool(d, false)
 	if err != nil {
 		return fmt.Errorf("Error converting terraform data model to AzDO agent pool reference: %+v", err)
@@ -108,13 +108,13 @@ func resourceAzureAgentPoolDelete(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Error getting agent pool Id: %+v", err)
 	}
 
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	return clients.TaskAgentClient.DeleteAgentPool(clients.Ctx, taskagent.DeleteAgentPoolArgs{
 		PoolId: &poolID,
 	})
 }
 
-func createAzureAgentPool(clients *config.AggregatedClient, agentPool *taskagent.TaskAgentPool) (*taskagent.TaskAgentPool, error) {
+func createAzureAgentPool(clients *client.AggregatedClient, agentPool *taskagent.TaskAgentPool) (*taskagent.TaskAgentPool, error) {
 	args := taskagent.AddAgentPoolArgs{
 		Pool: agentPool,
 	}
@@ -123,13 +123,13 @@ func createAzureAgentPool(clients *config.AggregatedClient, agentPool *taskagent
 	return newTaskAgent, err
 }
 
-func azureAgentPoolRead(clients *config.AggregatedClient, poolID int) (*taskagent.TaskAgentPool, error) {
+func azureAgentPoolRead(clients *client.AggregatedClient, poolID int) (*taskagent.TaskAgentPool, error) {
 	return clients.TaskAgentClient.GetAgentPool(clients.Ctx, taskagent.GetAgentPoolArgs{
 		PoolId: &poolID,
 	})
 }
 
-func azureAgentPoolUpdate(clients *config.AggregatedClient, agentPool *taskagent.TaskAgentPool) (*taskagent.TaskAgentPool, error) {
+func azureAgentPoolUpdate(clients *client.AggregatedClient, agentPool *taskagent.TaskAgentPool) (*taskagent.TaskAgentPool, error) {
 	return clients.TaskAgentClient.UpdateAgentPool(
 		clients.Ctx,
 		taskagent.UpdateAgentPoolArgs{

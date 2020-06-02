@@ -11,10 +11,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/datahelper"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/datahelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 func dataProjects() *schema.Resource {
@@ -79,7 +79,7 @@ func getProjectHash(v interface{}) int {
 }
 
 func dataSourceProjectsRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	state := d.Get("state").(string)
 	name := d.Get("project_name").(string)
 
@@ -141,7 +141,7 @@ func flattenProjectReferences(input *[]core.TeamProjectReference) []interface{} 
 	return results
 }
 
-func getProjectsForStateAndName(clients *config.AggregatedClient, projectState string, projectName string) ([]core.TeamProjectReference, error) {
+func getProjectsForStateAndName(clients *client.AggregatedClient, projectState string, projectName string) ([]core.TeamProjectReference, error) {
 	var projects []core.TeamProjectReference
 	var currentToken string
 
@@ -171,7 +171,7 @@ func getProjectsForStateAndName(clients *config.AggregatedClient, projectState s
 	return projects, nil
 }
 
-func getProjectsWithContinuationToken(clients *config.AggregatedClient, projectState string, continuationToken string) ([]core.TeamProjectReference, string, error) {
+func getProjectsWithContinuationToken(clients *client.AggregatedClient, projectState string, continuationToken string) ([]core.TeamProjectReference, string, error) {
 	state := core.ProjectState(projectState)
 	args := core.GetProjectsArgs{
 		StateFilter: &state,

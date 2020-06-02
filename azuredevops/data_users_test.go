@@ -14,8 +14,8 @@ import (
 
 	"github.com/ahmetb/go-linq"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 
 	"github.com/golang/mock/gomock"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -84,7 +84,7 @@ func TestDataSourceUser_Read_TestDoesNotSwallowError(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -108,7 +108,7 @@ func TestDataSourceUser_Read_HandlesContinuationToken(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -150,7 +150,7 @@ func TestDataSourceUser_Read_TestReadEmptyUser(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -184,7 +184,7 @@ func TestDataSourceUser_Read_TestFilterByPricipalName(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -221,7 +221,7 @@ func TestDataSourceUser_Read_TestFilterByOrigin(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -268,7 +268,7 @@ func TestDataSourceUser_Read_TestFilterByOriginId(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -315,7 +315,7 @@ func TestDataSourceUser_Read_TestFilterByOriginOriginId(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -363,7 +363,7 @@ func TestDataSourceUser_Read_TestFilterBySubjectType(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}

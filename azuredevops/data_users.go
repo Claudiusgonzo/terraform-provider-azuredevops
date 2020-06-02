@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 func dataUsers() *schema.Resource {
@@ -84,7 +84,7 @@ func dataUsers() *schema.Resource {
 }
 
 func dataUsersRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	users := make([]interface{}, 0)
 	subjectTypes := []string{}
 
@@ -195,7 +195,7 @@ func flattenUser(user *graph.GraphUser) (map[string]interface{}, error) {
 	return s, nil
 }
 
-func getUsersWithContinuationToken(clients *config.AggregatedClient, subjectTypes *[]string, continuationToken string) ([]graph.GraphUser, string, error) {
+func getUsersWithContinuationToken(clients *client.AggregatedClient, subjectTypes *[]string, continuationToken string) ([]graph.GraphUser, string, error) {
 	args := graph.ListUsersArgs{
 		SubjectTypes: subjectTypes,
 	}

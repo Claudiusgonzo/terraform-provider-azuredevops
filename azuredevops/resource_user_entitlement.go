@@ -14,11 +14,11 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/licensing"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/memberentitlementmanagement"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 var (
@@ -120,7 +120,7 @@ func resourceUserEntitlement() *schema.Resource {
 }
 
 func resourceUserEntitlementCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	userEntitlement, err := expandUserEntitlement(d)
 	if err != nil {
 		return fmt.Errorf("Creating user entitlement: %v", err)
@@ -136,7 +136,7 @@ func resourceUserEntitlementCreate(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceUserEntitlementRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	userEntitlementID := d.Id()
 	id, err := uuid.Parse(userEntitlementID)
 	if err != nil {
@@ -212,7 +212,7 @@ func flattenUserEntitlement(d *schema.ResourceData, userEntitlement *memberentit
 	d.Set("licensing_source", *userEntitlement.AccessLevel.LicensingSource)
 }
 
-func addUserEntitlement(clients *config.AggregatedClient, userEntitlement *memberentitlementmanagement.UserEntitlement) (*memberentitlementmanagement.UserEntitlement, error) {
+func addUserEntitlement(clients *client.AggregatedClient, userEntitlement *memberentitlementmanagement.UserEntitlement) (*memberentitlementmanagement.UserEntitlement, error) {
 	userEntitlementsPostResponse, err := clients.MemberEntitleManagementClient.AddUserEntitlement(clients.Ctx, memberentitlementmanagement.AddUserEntitlementArgs{
 		UserEntitlement: userEntitlement,
 	})
@@ -232,7 +232,7 @@ func addUserEntitlement(clients *config.AggregatedClient, userEntitlement *membe
 	return userEntitlementsPostResponse.UserEntitlement, nil
 }
 
-func readUserEntitlement(clients *config.AggregatedClient, id *uuid.UUID) (*memberentitlementmanagement.UserEntitlement, error) {
+func readUserEntitlement(clients *client.AggregatedClient, id *uuid.UUID) (*memberentitlementmanagement.UserEntitlement, error) {
 	return clients.MemberEntitleManagementClient.GetUserEntitlement(clients.Ctx, memberentitlementmanagement.GetUserEntitlementArgs{
 		UserId: id,
 	})
@@ -249,9 +249,9 @@ func resourceUserEntitlementDelete(d *schema.ResourceData, m interface{}) error 
 		return fmt.Errorf("Error parsing UserEntitlement ID. UserEntitlementID: %s. %v", userEntitlementID, err)
 	}
 
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
-	err = clients.MemberEntitleManagementClient.DeleteUserEntitlement(m.(*config.AggregatedClient).Ctx, memberentitlementmanagement.DeleteUserEntitlementArgs{
+	err = clients.MemberEntitleManagementClient.DeleteUserEntitlement(m.(*client.AggregatedClient).Ctx, memberentitlementmanagement.DeleteUserEntitlementArgs{
 		UserId: &id,
 	})
 
@@ -278,7 +278,7 @@ func resourceUserEntitlementUpdate(d *schema.ResourceData, m interface{}) error 
 		return fmt.Errorf("Reading account licensing source for UserEntitlementID: %s", userEntitlementID)
 	}
 
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	patchResponse, err := clients.MemberEntitleManagementClient.UpdateUserEntitlement(clients.Ctx,
 		memberentitlementmanagement.UpdateUserEntitlementArgs{
@@ -320,7 +320,7 @@ func importUserEntitlement(d *schema.ResourceData, m interface{}) ([]*schema.Res
 		}
 
 		id := ""
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		skip := 0
 		page := 100
 

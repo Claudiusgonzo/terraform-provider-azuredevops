@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 )
 
 const (
@@ -27,6 +27,6 @@ func clientConfigRead(d *schema.ResourceData, m interface{}) error {
 	// The ID is meaningless for this data source, so ID can act as a
 	// point in time snapshot
 	d.SetId(time.Now().UTC().String())
-	d.Set(organizationURL, m.(*config.AggregatedClient).OrganizationURL)
+	d.Set(organizationURL, m.(*client.AggregatedClient).OrganizationURL)
 	return nil
 }

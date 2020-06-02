@@ -17,8 +17,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -69,13 +69,13 @@ func TestAzureDevOpsResourceAuthorization_Update_DoesNotSwallowError(t *testing.
 	require.Contains(t, err.Error(), "UpdateResourceAuthorization() Failed")
 }
 
-func prepareForCreateOrUpdate(t *testing.T, ctrl *gomock.Controller, expectedMessage string) (*schema.Resource, *schema.ResourceData, *config.AggregatedClient) {
+func prepareForCreateOrUpdate(t *testing.T, ctrl *gomock.Controller, expectedMessage string) (*schema.Resource, *schema.ResourceData, *client.AggregatedClient) {
 	r := resourceResourceAuthorization()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.AuthorizeProjectResourcesArgs{
 		Resources: &[]build.DefinitionResourceReference{resourceReferenceAuthorized},
@@ -98,7 +98,7 @@ func TestAzureDevOpsResourceAuthorization_Read_DoesNotSwallowError(t *testing.T)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.GetProjectResourcesArgs{
 		Project: &projectId,
@@ -124,7 +124,7 @@ func TestAzureDevOpsResourceAuthorization_Delete_DoesNotSwallowError(t *testing.
 	flattenAuthorizedResource(resourceData, &resourceReferenceNotAuthorized, projectId)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.AuthorizeProjectResourcesArgs{
 		Resources: &[]build.DefinitionResourceReference{resourceReferenceNotAuthorized},

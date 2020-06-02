@@ -17,8 +17,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,7 +47,7 @@ func TestAzureDevOpsAgentPool_CreateAgentPool_DoesNotSwallowErrorFromFailedAddAg
 	defer ctrl.Finish()
 
 	taskAgentClient := azdosdkmocks.NewMockTaskagentClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		TaskAgentClient: taskAgentClient,
 		Ctx:             context.Background(),
 	}
@@ -68,7 +68,7 @@ func TestAzureDevOpsAgentPool_CreateAgentPool_DoesNotSwallowErrorFromFailedAddAg
 }
 
 func TestAzureDevOpsAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
-	client := &config.AggregatedClient{}
+	client := &client.AggregatedClient{}
 
 	resourceData := schema.TestResourceDataRaw(t, resourceAzureAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &testAgentPool)
@@ -79,7 +79,7 @@ func TestAzureDevOpsAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testi
 }
 
 func TestAzureDevOpsAgentPool_UpdateAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
-	client := &config.AggregatedClient{}
+	client := &client.AggregatedClient{}
 
 	resourceData := schema.TestResourceDataRaw(t, resourceAzureAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &testAgentPool)
@@ -94,7 +94,7 @@ func TestAzureDevOpsAgentPool_UpdateAgentPool_UpdateAndRead(t *testing.T) {
 	defer ctrl.Finish()
 
 	taskAgentClient := azdosdkmocks.NewMockTaskagentClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		TaskAgentClient: taskAgentClient,
 		Ctx:             context.Background(),
 	}

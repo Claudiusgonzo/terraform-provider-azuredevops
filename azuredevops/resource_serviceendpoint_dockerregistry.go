@@ -5,9 +5,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
 	crud "github.com/microsoft/terraform-provider-azuredevops/azuredevops/crud/serviceendpoint"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
 func resourceServiceEndpointDockerRegistry() *schema.Resource {
@@ -85,7 +85,7 @@ func flattenServiceEndpointDockerRegistry(d *schema.ResourceData, serviceEndpoin
 }
 
 // parseImportedProjectIDAndServiceEndpointID : Parse the Id (projectId/serviceEndpointId) or (projectName/serviceEndpointId)
-func parseImportedProjectIDAndServiceEndpointID(clients *config.AggregatedClient, id string) (string, string, error) {
+func parseImportedProjectIDAndServiceEndpointID(clients *client.AggregatedClient, id string) (string, string, error) {
 	project, resourceID, err := tfhelper.ParseImportedUUID(id)
 	if err != nil {
 		return "", "", err

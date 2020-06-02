@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -61,7 +61,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Create_DoesNotSwallowError(t *testing.
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.CreateServiceEndpointArgs{Endpoint: &ghTestServiceEndpoint, Project: ghTestServiceEndpointProjectID}
 	buildClient.
@@ -84,7 +84,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Read_DoesNotSwallowError(t *testing.T)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.GetServiceEndpointDetailsArgs{EndpointId: ghTestServiceEndpoint.Id, Project: ghTestServiceEndpointProjectID}
 	buildClient.
@@ -107,7 +107,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Delete_DoesNotSwallowError(t *testing.
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.DeleteServiceEndpointArgs{EndpointId: ghTestServiceEndpoint.Id, Project: ghTestServiceEndpointProjectID}
 	buildClient.
@@ -131,7 +131,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Update_DoesNotSwallowError(t *testing.
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.UpdateServiceEndpointArgs{
 		Endpoint:   &ghTestServiceEndpoint,

@@ -15,9 +15,9 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 )
 
 func resourceGroup() *schema.Resource {
@@ -172,7 +172,7 @@ func azDOGraphCreateGroup(ctx context.Context, client graph.Client, args azDOGra
 }
 
 func resourceGroupCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	// using: POST https://vssps.dev.azure.com/{organization}/_apis/graph/groups?api-version=5.1-preview.1
 	cga := azDOGraphCreateGroupArgs{}
@@ -241,7 +241,7 @@ func resourceGroupCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceGroupRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	// using: GET https://vssps.dev.azure.com/{organization}/_apis/graph/groups/{groupDescriptor}?api-version=5.1-preview.1
 	// d.Get("descriptor").(string) => {groupDescriptor}
@@ -268,7 +268,7 @@ func resourceGroupRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceGroupUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	// using: PATCH https://vssps.dev.azure.com/{organization}/_apis/graph/groups/{groupDescriptor}?api-version=5.1-preview.1
 	// d.Get("descriptor").(string) => {groupDescriptor}
@@ -300,7 +300,7 @@ func resourceGroupUpdate(d *schema.ResourceData, m interface{}) error {
 		membersToAdd := newData.(*schema.Set).Difference(oldData.(*schema.Set))
 		// members that need to be removed will be missing from the new data, but present in the old data
 		membersToRemove := oldData.(*schema.Set).Difference(newData.(*schema.Set))
-		if err := applyMembershipUpdate(m.(*config.AggregatedClient),
+		if err := applyMembershipUpdate(m.(*client.AggregatedClient),
 			expandGroupMembers(group, membersToAdd),
 			expandGroupMembers(group, membersToRemove)); err != nil {
 			return err
@@ -311,7 +311,7 @@ func resourceGroupUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceGroupDelete(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	// using: DELETE https://vssps.dev.azure.com/{organization}/_apis/graph/groups/{groupDescriptor}?api-version=5.1-preview.1
 	// d.Get("descriptor").(string) => {groupDescriptor}
@@ -370,7 +370,7 @@ func flattenGroup(d *schema.ResourceData, group *graph.GraphGroup, members *[]gr
 	return nil
 }
 
-func groupReadMembers(groupDescriptor string, clients *config.AggregatedClient) (*[]graph.GraphMembership, error) {
+func groupReadMembers(groupDescriptor string, clients *client.AggregatedClient) (*[]graph.GraphMembership, error) {
 	actualMembers, err := clients.GraphClient.ListMemberships(clients.Ctx, graph.ListMembershipsArgs{
 		SubjectDescriptor: &groupDescriptor,
 		Direction:         &graph.GraphTraversalDirectionValues.Down,

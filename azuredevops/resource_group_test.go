@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/stretchr/testify/require"
 )
 
@@ -40,7 +40,7 @@ func TestGroupResource_Create_TestOriginIdContext(t *testing.T) {
 		defer ctrl.Finish()
 
 		graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-		clients := &config.AggregatedClient{
+		clients := &client.AggregatedClient{
 			GraphClient: graphClient,
 			Ctx:         context.Background(),
 		}
@@ -94,7 +94,7 @@ func TestGroupResource_Create_TestHandleErrorMailContext(t *testing.T) {
 		defer ctrl.Finish()
 
 		graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-		clients := &config.AggregatedClient{
+		clients := &client.AggregatedClient{
 			GraphClient: graphClient,
 			Ctx:         context.Background(),
 		}
@@ -127,7 +127,7 @@ func TestGroupResource_Create_TestHandleErrorOriginIdContext(t *testing.T) {
 		defer ctrl.Finish()
 
 		graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-		clients := &config.AggregatedClient{
+		clients := &client.AggregatedClient{
 			GraphClient: graphClient,
 			Ctx:         context.Background(),
 		}
@@ -160,7 +160,7 @@ func TestGroupResource_Create_TestVstsContext(t *testing.T) {
 		defer ctrl.Finish()
 
 		graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-		clients := &config.AggregatedClient{
+		clients := &client.AggregatedClient{
 			GraphClient: graphClient,
 			Ctx:         context.Background(),
 		}
@@ -216,7 +216,7 @@ func TestGroupResource_Create_TestMailContext(t *testing.T) {
 		defer ctrl.Finish()
 
 		graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-		clients := &config.AggregatedClient{
+		clients := &client.AggregatedClient{
 			GraphClient: graphClient,
 			Ctx:         context.Background(),
 		}
@@ -268,7 +268,7 @@ func TestGroupResource_Create_TestParameterCollisions(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GraphClient: graphClient,
 		Ctx:         context.Background(),
 	}
@@ -313,7 +313,7 @@ func TestGroupResource_Create_TestHandleErrorVstsContext(t *testing.T) {
 		defer ctrl.Finish()
 
 		graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-		clients := &config.AggregatedClient{
+		clients := &client.AggregatedClient{
 			GraphClient: graphClient,
 			Ctx:         context.Background(),
 		}

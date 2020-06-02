@@ -9,11 +9,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 const (
@@ -128,7 +128,7 @@ func resourceVariableGroup() *schema.Resource {
 }
 
 func resourceVariableGroupCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	variableGroupParameters, projectID, err := expandVariableGroupParameters(d)
 	if err != nil {
 		return fmt.Errorf(expandingVariableGroupErrorMessageFormat, err)
@@ -158,7 +158,7 @@ func resourceVariableGroupCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceVariableGroupRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	projectID, variableGroupID, err := tfhelper.ParseProjectIDAndResourceID(d)
 	if err != nil {
@@ -208,7 +208,7 @@ func resourceVariableGroupRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceVariableGroupUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	variableGroupParams, projectID, err := expandVariableGroupParameters(d)
 	if err != nil {
@@ -244,7 +244,7 @@ func resourceVariableGroupUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceVariableGroupDelete(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	projectID, variableGroupID, err := tfhelper.ParseProjectIDAndResourceID(d)
 	if err != nil {
 		return fmt.Errorf(invalidVariableGroupIDErrorMessageFormat, err)
@@ -260,7 +260,7 @@ func resourceVariableGroupDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 // Make the Azure DevOps API call to create the variable group
-func createVariableGroup(clients *config.AggregatedClient, variableGroupParams *taskagent.VariableGroupParameters, project *string) (*taskagent.VariableGroup, error) {
+func createVariableGroup(clients *client.AggregatedClient, variableGroupParams *taskagent.VariableGroupParameters, project *string) (*taskagent.VariableGroup, error) {
 	createdVariableGroup, err := clients.TaskAgentClient.AddVariableGroup(
 		clients.Ctx,
 		taskagent.AddVariableGroupArgs{
@@ -271,7 +271,7 @@ func createVariableGroup(clients *config.AggregatedClient, variableGroupParams *
 }
 
 // Make the Azure DevOps API call to update the variable group
-func updateVariableGroup(clients *config.AggregatedClient, parameters *taskagent.VariableGroupParameters, variableGroupID *int, project *string) (*taskagent.VariableGroup, error) {
+func updateVariableGroup(clients *client.AggregatedClient, parameters *taskagent.VariableGroupParameters, variableGroupID *int, project *string) (*taskagent.VariableGroup, error) {
 	updatedVariableGroup, err := clients.TaskAgentClient.UpdateVariableGroup(
 		clients.Ctx,
 		taskagent.UpdateVariableGroupArgs{
@@ -284,7 +284,7 @@ func updateVariableGroup(clients *config.AggregatedClient, parameters *taskagent
 }
 
 // Make the Azure DevOps API call to delete the variable group
-func deleteVariableGroup(clients *config.AggregatedClient, project *string, variableGroupID *int) error {
+func deleteVariableGroup(clients *client.AggregatedClient, project *string, variableGroupID *int) error {
 	err := clients.TaskAgentClient.DeleteVariableGroup(
 		clients.Ctx,
 		taskagent.DeleteVariableGroupArgs{
@@ -480,7 +480,7 @@ func expandAllowAccess(d *schema.ResourceData, createdVariableGroup *taskagent.V
 }
 
 // Make the Azure DevOps API call to update the Definition resource = Allow Access
-func updateDefinitionResourceAuth(clients *config.AggregatedClient, definitionResource []build.DefinitionResourceReference, project *string) (*[]build.DefinitionResourceReference, error) {
+func updateDefinitionResourceAuth(clients *client.AggregatedClient, definitionResource []build.DefinitionResourceReference, project *string) (*[]build.DefinitionResourceReference, error) {
 	definitionResourceReference, err := clients.BuildClient.AuthorizeProjectResources(
 		clients.Ctx, build.AuthorizeProjectResourcesArgs{
 			Resources: &definitionResource,
@@ -491,7 +491,7 @@ func updateDefinitionResourceAuth(clients *config.AggregatedClient, definitionRe
 }
 
 // Make the Azure DevOps API call to delete the resource Auth Authorized=false
-func deleteDefinitionResourceAuth(clients *config.AggregatedClient, variableGroupID *string, project *string) (*[]build.DefinitionResourceReference, error) {
+func deleteDefinitionResourceAuth(clients *client.AggregatedClient, variableGroupID *string, project *string) (*[]build.DefinitionResourceReference, error) {
 	resourceRefType := "variablegroup"
 	auth := false
 	name := ""
@@ -528,7 +528,7 @@ func flattenAllowAccess(d *schema.ResourceData, definitionResource *[]build.Defi
 }
 
 // ParseImportedProjectIDAndVariableGroupID : Parse the Id (projectId/variableGroupId) or (projectName/variableGroupId)
-func ParseImportedProjectIDAndVariableGroupID(clients *config.AggregatedClient, id string) (string, int, error) {
+func ParseImportedProjectIDAndVariableGroupID(clients *client.AggregatedClient, id string) (string, int, error) {
 	project, resourceID, err := tfhelper.ParseImportedID(id)
 	if err != nil {
 		return "", 0, err

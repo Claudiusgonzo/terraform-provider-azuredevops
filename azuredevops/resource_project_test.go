@@ -17,8 +17,8 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/operations"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -41,7 +41,7 @@ func TestAzureDevOpsProject_CreateProject_DoesNotSwallowErrorFromFailedCreateCal
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -66,7 +66,7 @@ func TestAzureDevOpsProject_CreateProject_DoesNotSwallowErrorFromFailedAsyncStat
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
 	operationsClient := azdosdkmocks.NewMockOperationsClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient:       coreClient,
 		OperationsClient: operationsClient,
 		Ctx:              context.Background(),
@@ -100,7 +100,7 @@ func TestAzureDevOpsProject_CreateProject_PollsUntilOperationIsSuccessful(t *tes
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
 	operationsClient := azdosdkmocks.NewMockOperationsClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient:       coreClient,
 		OperationsClient: operationsClient,
 		Ctx:              context.Background(),
@@ -141,7 +141,7 @@ func TestAzureDevOpsProject_CreateProject_ReportsErrorIfNoSuccessForLongTime(t *
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
 	operationsClient := azdosdkmocks.NewMockOperationsClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient:       coreClient,
 		OperationsClient: operationsClient,
 		Ctx:              context.Background(),
@@ -174,7 +174,7 @@ func TestAzureDevOpsProject_FlattenExpand_RoundTrip(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -215,7 +215,7 @@ func TestAzureDevOpsProject_ProjectRead_UsesIdIfSet(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -241,7 +241,7 @@ func TestAzureDevOpsProject_ProjectRead_UsesNameIfIdNotSet(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}

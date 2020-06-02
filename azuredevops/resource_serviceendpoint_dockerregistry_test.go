@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -65,7 +65,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Create_DoesNotSwallowError(t *
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.CreateServiceEndpointArgs{Endpoint: &dockerRegistryTestServiceEndpoint, Project: dockerRegistryTestServiceEndpointProjectID}
 	buildClient.
@@ -88,7 +88,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Read_DoesNotSwallowError(t *te
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.GetServiceEndpointDetailsArgs{EndpointId: dockerRegistryTestServiceEndpoint.Id, Project: dockerRegistryTestServiceEndpointProjectID}
 	buildClient.
@@ -111,7 +111,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Delete_DoesNotSwallowError(t *
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.DeleteServiceEndpointArgs{EndpointId: dockerRegistryTestServiceEndpoint.Id, Project: dockerRegistryTestServiceEndpointProjectID}
 	buildClient.
@@ -134,7 +134,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Update_DoesNotSwallowError(t *
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.UpdateServiceEndpointArgs{
 		Endpoint:   &dockerRegistryTestServiceEndpoint,

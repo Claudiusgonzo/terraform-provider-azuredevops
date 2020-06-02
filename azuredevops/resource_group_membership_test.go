@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,7 +22,7 @@ func TestGroupMembership_Create_DoesNotSwallowErrors(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedArgs := graph.AddMembershipArgs{
 		ContainerDescriptor: converter.String("TEST_GROUP"),
@@ -43,7 +43,7 @@ func TestGroupMembership_Destroy_DoesNotSwallowErrors(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedArgs := graph.RemoveMembershipArgs{
 		ContainerDescriptor: converter.String("TEST_GROUP"),
@@ -64,7 +64,7 @@ func TestGroupMembership_Read_DoesNotSwallowErrors(t *testing.T) {
 	defer ctrl.Finish()
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedArgs := graph.ListMembershipsArgs{
 		SubjectDescriptor: converter.String("TEST_GROUP"),

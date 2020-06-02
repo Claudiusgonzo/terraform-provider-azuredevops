@@ -9,11 +9,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/policy"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
 /**
@@ -221,7 +221,7 @@ func genBaseSchema() map[string]*schema.Schema {
 
 func genPolicyCreateFunc(crudArgs *PolicyCrudArgs) schema.CreateFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		policyConfig, projectID, err := crudArgs.ExpandFunc(d, crudArgs.PolicyType)
 		if err != nil {
 			return err
@@ -242,7 +242,7 @@ func genPolicyCreateFunc(crudArgs *PolicyCrudArgs) schema.CreateFunc {
 
 func genPolicyReadFunc(crudArgs *PolicyCrudArgs) schema.ReadFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		projectID := d.Get(SchemaProjectID).(string)
 		policyID, err := strconv.Atoi(d.Id())
 
@@ -270,7 +270,7 @@ func genPolicyReadFunc(crudArgs *PolicyCrudArgs) schema.ReadFunc {
 
 func genPolicyUpdateFunc(crudArgs *PolicyCrudArgs) schema.UpdateFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		policyConfig, projectID, err := crudArgs.ExpandFunc(d, crudArgs.PolicyType)
 		if err != nil {
 			return err
@@ -292,7 +292,7 @@ func genPolicyUpdateFunc(crudArgs *PolicyCrudArgs) schema.UpdateFunc {
 
 func genPolicyDeleteFunc(crudArgs *PolicyCrudArgs) schema.DeleteFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		policyConfig, projectID, err := crudArgs.ExpandFunc(d, crudArgs.PolicyType)
 		if err != nil {
 			return err

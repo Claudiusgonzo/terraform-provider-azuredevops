@@ -9,12 +9,12 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/datahelper"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/datahelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 func dataGitRepositories() *schema.Resource {
@@ -87,7 +87,7 @@ func dataGitRepositories() *schema.Resource {
 }
 
 func dataSourceGitRepositoriesRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	projectRepos, err := getGitRepositoriesByNameAndProject(d, clients)
 	if err != nil {
@@ -193,7 +193,7 @@ func flattenGitRepositories(repos *[]git.GitRepository) ([]interface{}, error) {
 	return results, nil
 }
 
-func getGitRepositoriesByNameAndProject(d *schema.ResourceData, clients *config.AggregatedClient) (*[]git.GitRepository, error) {
+func getGitRepositoriesByNameAndProject(d *schema.ResourceData, clients *client.AggregatedClient) (*[]git.GitRepository, error) {
 	var repos *[]git.GitRepository
 	var err error
 	name, projectID := d.Get("name").(string), d.Get("project_id").(string)

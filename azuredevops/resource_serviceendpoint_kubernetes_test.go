@@ -11,8 +11,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 
 	"github.com/google/uuid"
@@ -131,7 +131,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionCreateDoesNotSw
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.CreateServiceEndpointArgs{Endpoint: kubernetesTestServiceEndpointForAzureSubscription, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -155,7 +155,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionReadDoesNotSwal
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.GetServiceEndpointDetailsArgs{EndpointId: kubernetesTestServiceEndpointForAzureSubscription.Id, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -179,7 +179,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionDeleteDoesNotSw
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.DeleteServiceEndpointArgs{EndpointId: kubernetesTestServiceEndpointForAzureSubscription.Id, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -203,7 +203,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionUpdateDoesNotSw
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.UpdateServiceEndpointArgs{
 		Endpoint:   kubernetesTestServiceEndpointForAzureSubscription,
@@ -246,7 +246,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigCreateDoesNotSwallowEr
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForKubeconfig, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.CreateServiceEndpointArgs{Endpoint: kubernetesTestServiceEndpointForKubeconfig, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -271,7 +271,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigReadDoesNotSwallowErro
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForKubeconfig, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.GetServiceEndpointDetailsArgs{EndpointId: kubernetesTestServiceEndpointForKubeconfig.Id, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -296,7 +296,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigDeleteDoesNotSwallowEr
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForKubeconfig, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.DeleteServiceEndpointArgs{EndpointId: kubernetesTestServiceEndpointForKubeconfig.Id, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -321,7 +321,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigUpdateDoesNotSwallowEr
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForKubeconfig, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.UpdateServiceEndpointArgs{
 		Endpoint:   kubernetesTestServiceEndpointForKubeconfig,
@@ -365,7 +365,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountCreateDoesNotSwall
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForServiceAccount, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.CreateServiceEndpointArgs{Endpoint: kubernetesTestServiceEndpointForServiceAccount, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -390,7 +390,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountReadDoesNotSwallow
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForServiceAccount, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.GetServiceEndpointDetailsArgs{EndpointId: kubernetesTestServiceEndpointForServiceAccount.Id, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -415,7 +415,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountDeleteDoesNotSwall
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForServiceAccount, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.DeleteServiceEndpointArgs{EndpointId: kubernetesTestServiceEndpointForServiceAccount.Id, Project: kubernetesTestServiceEndpointProjectID}
 	buildClient.
@@ -440,7 +440,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountUpdateDoesNotSwall
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForServiceAccount, kubernetesTestServiceEndpointProjectID)
 
 	buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-	clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := serviceendpoint.UpdateServiceEndpointArgs{
 		Endpoint:   kubernetesTestServiceEndpointForServiceAccount,

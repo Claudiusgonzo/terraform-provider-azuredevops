@@ -15,8 +15,8 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,7 +47,7 @@ func TestAzureGitRepo_Create_DoesNotSwallowErrorFromFailedCreateCall(t *testing.
 	configureCleanInitialization(resourceData)
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
-	clients := &config.AggregatedClient{GitReposClient: reposClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GitReposClient: reposClient, Ctx: context.Background()}
 
 	expectedArgs := git.CreateRepositoryArgs{
 		GitRepositoryToCreate: &git.GitRepositoryCreateOptions{
@@ -79,7 +79,7 @@ func TestAzureGitRepo_Update_DoesNotSwallowErrorFromFailedCreateCall(t *testing.
 	configureCleanInitialization(resourceData)
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
-	clients := &config.AggregatedClient{GitReposClient: reposClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GitReposClient: reposClient, Ctx: context.Background()}
 
 	reposClient.
 		EXPECT().
@@ -158,7 +158,7 @@ func TestAzureGitRepo_Read_DoesNotSwallowErrorFromFailedReadCall(t *testing.T) {
 	defer ctrl.Finish()
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: reposClient,
 		Ctx:            context.Background(),
 	}
@@ -184,7 +184,7 @@ func TestAzureGitRepo_Read_UsesIdIfSet(t *testing.T) {
 	defer ctrl.Finish()
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: reposClient,
 		Ctx:            context.Background(),
 	}
@@ -207,7 +207,7 @@ func TestAzureGitRepo_Delete_ChecksForValidUUID(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, resourceGitRepository().Schema, nil)
 	resourceData.SetId("not-a-uuid-id")
 
-	err := resourceGitRepositoryDelete(resourceData, &config.AggregatedClient{})
+	err := resourceGitRepositoryDelete(resourceData, &client.AggregatedClient{})
 	require.NotNil(t, err)
 	require.Contains(t, err.Error(), "Invalid repositoryId UUID")
 }
@@ -217,7 +217,7 @@ func TestAzureGitRepo_Delete_DoesNotSwallowErrorFromFailedDeleteCall(t *testing.
 	defer ctrl.Finish()
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: reposClient,
 		Ctx:            context.Background(),
 	}
@@ -243,7 +243,7 @@ func TestAzureGitRepo_Read_UsesNameIfIdNotSet(t *testing.T) {
 	defer ctrl.Finish()
 
 	reposClient := azdosdkmocks.NewMockGitClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: reposClient,
 		Ctx:            context.Background(),
 	}

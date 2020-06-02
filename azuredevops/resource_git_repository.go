@@ -12,11 +12,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 // RepoInitType strategy for initializing the repo
@@ -136,7 +136,7 @@ type repoInitializationMeta struct {
 }
 
 func resourceGitRepositoryCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	repo, initialization, projectID, err := expandGitRepository(d)
 	if err != nil {
 		return fmt.Errorf("Error expanding repository resource data: %+v", err)
@@ -180,7 +180,7 @@ func resourceGitRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 	return resourceGitRepositoryRead(d, m)
 }
 
-func waitForBranch(clients *config.AggregatedClient, repoName *string, projectID fmt.Stringer) error {
+func waitForBranch(clients *client.AggregatedClient, repoName *string, projectID fmt.Stringer) error {
 	stateConf := &resource.StateChangeConf{
 		Pending: []string{"Waiting"},
 		Target:  []string{"Synched"},
@@ -208,7 +208,7 @@ func waitForBranch(clients *config.AggregatedClient, repoName *string, projectID
 	return nil
 }
 
-func createGitRepository(clients *config.AggregatedClient, repoName *string, projectID *uuid.UUID, parentRepo *git.GitRepositoryRef) (*git.GitRepository, error) {
+func createGitRepository(clients *client.AggregatedClient, repoName *string, projectID *uuid.UUID, parentRepo *git.GitRepositoryRef) (*git.GitRepository, error) {
 	args := git.CreateRepositoryArgs{
 		GitRepositoryToCreate: &git.GitRepositoryCreateOptions{
 			Name: repoName,
@@ -226,7 +226,7 @@ func createGitRepository(clients *config.AggregatedClient, repoName *string, pro
 	return createdRepository, nil
 }
 
-func initializeGitRepository(clients *config.AggregatedClient, repo *git.GitRepository) error {
+func initializeGitRepository(clients *client.AggregatedClient, repo *git.GitRepository) error {
 	args := git.CreatePushArgs{
 		RepositoryId: repo.Name,
 		Project:      repo.Project.Name,
@@ -267,7 +267,7 @@ func resourceGitRepositoryRead(d *schema.ResourceData, m interface{}) error {
 	repoName := d.Get("name").(string)
 	projectID := d.Get("project_id").(string)
 
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	repo, err := gitRepositoryRead(clients, repoID, repoName, projectID)
 	if err != nil {
 		if utils.ResponseWasNotFound(err) {
@@ -282,7 +282,7 @@ func resourceGitRepositoryRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceGitRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	repo, _, projectID, err := expandGitRepository(d)
 	if err != nil {
 		return fmt.Errorf("Error converting terraform data model to AzDO project reference: %+v", err)
@@ -296,7 +296,7 @@ func resourceGitRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
 	return resourceGitRepositoryRead(d, m)
 }
 
-func updateGitRepository(clients *config.AggregatedClient, repository *git.GitRepository, project fmt.Stringer) (*git.GitRepository, error) {
+func updateGitRepository(clients *client.AggregatedClient, repository *git.GitRepository, project fmt.Stringer) (*git.GitRepository, error) {
 	if nil == project {
 		return nil, fmt.Errorf("updateGitRepository: ID of project cannot be nil")
 	}
@@ -312,7 +312,7 @@ func updateGitRepository(clients *config.AggregatedClient, repository *git.GitRe
 
 func resourceGitRepositoryDelete(d *schema.ResourceData, m interface{}) error {
 	repoID := d.Id()
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	err := deleteGitRepository(clients, repoID)
 	if err != nil {
 		return err
@@ -321,7 +321,7 @@ func resourceGitRepositoryDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func deleteGitRepository(clients *config.AggregatedClient, repoID string) error {
+func deleteGitRepository(clients *client.AggregatedClient, repoID string) error {
 	uuid, err := uuid.Parse(repoID)
 	if err != nil {
 		return fmt.Errorf("Invalid repositoryId UUID: %s", repoID)
@@ -333,7 +333,7 @@ func deleteGitRepository(clients *config.AggregatedClient, repoID string) error 
 }
 
 // Lookup an Azure Git Repository using the ID, or name if the ID is not set.
-func gitRepositoryRead(clients *config.AggregatedClient, repoID string, repoName string, projectID string) (*git.GitRepository, error) {
+func gitRepositoryRead(clients *client.AggregatedClient, repoID string, repoName string, projectID string) (*git.GitRepository, error) {
 	identifier := repoID
 	if strings.EqualFold(identifier, "") {
 		identifier = repoName

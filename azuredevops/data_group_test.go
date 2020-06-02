@@ -14,8 +14,8 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -35,7 +35,7 @@ func TestGroupDataSource_DoesNotSwallowProjectDescriptorLookupError_Generic(t *t
 	resourceData := createResourceData(t, projectID.String(), "group-name")
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedArgs := graph.GetDescriptorArgs{StorageKey: &projectID}
 	graphClient.
@@ -79,7 +79,7 @@ func TestGroupDataSource_DoesNotSwallowListGroupError(t *testing.T) {
 	resourceData := createResourceData(t, projectID.String(), "group-name")
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedProjectDescriptorLookupArgs := graph.GetDescriptorArgs{StorageKey: &projectID}
 	projectDescriptor := converter.String("descriptor")
@@ -109,7 +109,7 @@ func TestGroupDataSource_HandlesContinuationToken_And_SelectsCorrectGroup(t *tes
 	resourceData := createResourceData(t, projectID.String(), "name1")
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedProjectDescriptorLookupArgs := graph.GetDescriptorArgs{StorageKey: &projectID}
 	projectDescriptor := converter.String("descriptor")

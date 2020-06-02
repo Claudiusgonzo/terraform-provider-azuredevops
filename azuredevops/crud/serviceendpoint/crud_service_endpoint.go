@@ -8,18 +8,18 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/validate"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
 const errMsgTfConfigRead = "Error reading terraform configuration: %+v"
 
 type flatFunc func(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string)
 type expandFunc func(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error)
-type importFunc func(clients *config.AggregatedClient, id string) (string, string, error)
+type importFunc func(clients *client.AggregatedClient, id string) (string, string, error)
 
 //GenBaseServiceEndpointResource creates a Resource with the common parts
 // that all Service Endpoints require.
@@ -31,7 +31,7 @@ func GenBaseServiceEndpointResource(f flatFunc, e expandFunc, i importFunc) *sch
 		Delete: genServiceEndpointDeleteFunc(e),
 		Importer: &schema.ResourceImporter{
 			State: func(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-				projectID, serviceEndpointID, err := i(meta.(*config.AggregatedClient), d.Id())
+				projectID, serviceEndpointID, err := i(meta.(*client.AggregatedClient), d.Id())
 				if err != nil {
 					return nil, fmt.Errorf("Error parsing the variable service endpoint ID from the Terraform resource data:  %v", err)
 				}
@@ -144,7 +144,7 @@ func MakeUnprotectedSchema(r *schema.Resource, keyName, envVarName, description 
 }
 
 // Make the Azure DevOps API call to create the endpoint
-func createServiceEndpoint(clients *config.AggregatedClient, endpoint *serviceendpoint.ServiceEndpoint, project *string) (*serviceendpoint.ServiceEndpoint, error) {
+func createServiceEndpoint(clients *client.AggregatedClient, endpoint *serviceendpoint.ServiceEndpoint, project *string) (*serviceendpoint.ServiceEndpoint, error) {
 	if strings.EqualFold(*endpoint.Type, "github") && strings.EqualFold(*endpoint.Authorization.Scheme, "InstallationToken") {
 		return nil, fmt.Errorf("Github Apps must be created on Github and then can be imported")
 	}
@@ -158,7 +158,7 @@ func createServiceEndpoint(clients *config.AggregatedClient, endpoint *serviceen
 	return createdServiceEndpoint, err
 }
 
-func deleteServiceEndpoint(clients *config.AggregatedClient, project *string, endPointID *uuid.UUID) error {
+func deleteServiceEndpoint(clients *client.AggregatedClient, project *string, endPointID *uuid.UUID) error {
 	err := clients.ServiceEndpointClient.DeleteServiceEndpoint(
 		clients.Ctx,
 		serviceendpoint.DeleteServiceEndpointArgs{
@@ -169,7 +169,7 @@ func deleteServiceEndpoint(clients *config.AggregatedClient, project *string, en
 	return err
 }
 
-func updateServiceEndpoint(clients *config.AggregatedClient, endpoint *serviceendpoint.ServiceEndpoint, project *string) (*serviceendpoint.ServiceEndpoint, error) {
+func updateServiceEndpoint(clients *client.AggregatedClient, endpoint *serviceendpoint.ServiceEndpoint, project *string) (*serviceendpoint.ServiceEndpoint, error) {
 	if strings.EqualFold(*endpoint.Type, "github") && strings.EqualFold(*endpoint.Authorization.Scheme, "InstallationToken") {
 		return nil, fmt.Errorf("Github Apps can not be updated must match imported values exactly")
 	}
@@ -186,7 +186,7 @@ func updateServiceEndpoint(clients *config.AggregatedClient, endpoint *serviceen
 
 func genServiceEndpointCreateFunc(flatFunc flatFunc, expandFunc expandFunc) func(d *schema.ResourceData, m interface{}) error {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		serviceEndpoint, projectID, err := expandFunc(d)
 		if err != nil {
 			return fmt.Errorf(errMsgTfConfigRead, err)
@@ -204,7 +204,7 @@ func genServiceEndpointCreateFunc(flatFunc flatFunc, expandFunc expandFunc) func
 
 func genServiceEndpointReadFunc(flatFunc flatFunc) func(d *schema.ResourceData, m interface{}) error {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 
 		var serviceEndpointID *uuid.UUID
 		parsedServiceEndpointID, err := uuid.Parse(d.Id())
@@ -241,7 +241,7 @@ func genServiceEndpointReadFunc(flatFunc flatFunc) func(d *schema.ResourceData, 
 
 func genServiceEndpointUpdateFunc(flatFunc flatFunc, expandFunc expandFunc) schema.UpdateFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		serviceEndpoint, projectID, err := expandFunc(d)
 		if err != nil {
 			return fmt.Errorf(errMsgTfConfigRead, err)
@@ -259,7 +259,7 @@ func genServiceEndpointUpdateFunc(flatFunc flatFunc, expandFunc expandFunc) sche
 
 func genServiceEndpointDeleteFunc(expandFunc expandFunc) schema.DeleteFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
-		clients := m.(*config.AggregatedClient)
+		clients := m.(*client.AggregatedClient)
 		serviceEndpoint, projectID, err := expandFunc(d)
 		if err != nil {
 			return fmt.Errorf(errMsgTfConfigRead, err)

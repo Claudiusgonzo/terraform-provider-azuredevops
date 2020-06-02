@@ -7,11 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
 const (
@@ -45,7 +45,7 @@ func resourceAgentQueue() *schema.Resource {
 }
 
 func resourceAgentQueueCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	queue, projectID, err := expandAgentQueue(d)
 	if err != nil {
 		return fmt.Errorf("Error expanding the agent queue resource from state: %+v", err)
@@ -90,7 +90,7 @@ func expandAgentQueue(d *schema.ResourceData) (*taskagent.TaskAgentQueue, string
 }
 
 func resourceAgentQueueRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	queueID, err := converter.ASCIIToIntPtr(d.Id())
 	if err != nil {
 		return fmt.Errorf(invalidQueueIDErrorMessageFormat, err)
@@ -118,7 +118,7 @@ func resourceAgentQueueRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceAgentQueueDelete(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	queueID, err := converter.ASCIIToIntPtr(d.Id())
 	if err != nil {
 		return fmt.Errorf(invalidQueueIDErrorMessageFormat, err)

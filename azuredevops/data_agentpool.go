@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
 )
 
@@ -27,7 +28,7 @@ func dataAzureAgentPool() *schema.Resource {
 
 func dataSourceAgentPoolRead(d *schema.ResourceData, m interface{}) error {
 	agentPoolName := d.Get("name").(string)
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	agentPool, err := getAgentPoolByName(clients, &agentPoolName)
 	if err != nil {

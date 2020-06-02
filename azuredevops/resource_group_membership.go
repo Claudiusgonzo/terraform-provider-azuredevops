@@ -10,10 +10,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 )
 
 func resourceGroupMembership() *schema.Resource {
@@ -52,7 +52,7 @@ func resourceGroupMembership() *schema.Resource {
 }
 
 func resourceGroupMembershipCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	group := d.Get("group").(string)
 	mode := d.Get("mode").(string)
 	membersToAdd := d.Get("members").(*schema.Set)
@@ -72,7 +72,7 @@ func resourceGroupMembershipCreate(d *schema.ResourceData, m interface{}) error 
 		membersToRemove, _ = getGroupMembershipSet(nil)
 	}
 
-	err := applyMembershipUpdate(m.(*config.AggregatedClient),
+	err := applyMembershipUpdate(m.(*client.AggregatedClient),
 		expandGroupMembers(group, membersToAdd),
 		expandGroupMembers(group, membersToRemove))
 	if err != nil {
@@ -83,7 +83,7 @@ func resourceGroupMembershipCreate(d *schema.ResourceData, m interface{}) error 
 		Pending: []string{"Waiting"},
 		Target:  []string{"Synched"},
 		Refresh: func() (interface{}, string, error) {
-			clients := m.(*config.AggregatedClient)
+			clients := m.(*client.AggregatedClient)
 			state := "Waiting"
 			actualMemberships, err := getGroupMemberships(clients, group)
 			if err != nil {
@@ -127,7 +127,7 @@ func resourceGroupMembershipUpdate(d *schema.ResourceData, m interface{}) error 
 	// members that need to be removed will be missing from the new data, but present in the old data
 	membersToRemove := oldData.(*schema.Set).Difference(newData.(*schema.Set))
 
-	err := applyMembershipUpdate(m.(*config.AggregatedClient),
+	err := applyMembershipUpdate(m.(*client.AggregatedClient),
 		expandGroupMembers(group, membersToAdd),
 		expandGroupMembers(group, membersToRemove))
 	if err != nil {
@@ -138,7 +138,7 @@ func resourceGroupMembershipUpdate(d *schema.ResourceData, m interface{}) error 
 		Pending: []string{"Waiting"},
 		Target:  []string{"Synched"},
 		Refresh: func() (interface{}, string, error) {
-			clients := m.(*config.AggregatedClient)
+			clients := m.(*client.AggregatedClient)
 			state := "Waiting"
 			actualMemberships, err := getGroupMemberships(clients, group)
 			if err != nil {
@@ -167,7 +167,7 @@ func resourceGroupMembershipUpdate(d *schema.ResourceData, m interface{}) error 
 	return resourceGroupMembershipRead(d, m)
 }
 
-func applyMembershipUpdate(clients *config.AggregatedClient, toAdd *[]graph.GraphMembership, toRemove *[]graph.GraphMembership) error {
+func applyMembershipUpdate(clients *client.AggregatedClient, toAdd *[]graph.GraphMembership, toRemove *[]graph.GraphMembership) error {
 	if toRemove != nil && len(*toRemove) > 0 {
 		err := removeMembers(clients, toRemove)
 		if err != nil {
@@ -185,7 +185,7 @@ func applyMembershipUpdate(clients *config.AggregatedClient, toAdd *[]graph.Grap
 }
 
 func resourceGroupMembershipDelete(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	memberships := expandGroupMembers(d.Get("group").(string), d.Get("members").(*schema.Set))
 
 	err := removeMembers(clients, memberships)
@@ -199,7 +199,7 @@ func resourceGroupMembershipDelete(d *schema.ResourceData, m interface{}) error 
 }
 
 // Add members to a group using the AzDO REST API. If any error is encountered, the function immediately returns.
-func addMembers(clients *config.AggregatedClient, memberships *[]graph.GraphMembership) error {
+func addMembers(clients *client.AggregatedClient, memberships *[]graph.GraphMembership) error {
 	if memberships != nil {
 		for _, membership := range *memberships {
 			_, err := clients.GraphClient.AddMembership(clients.Ctx, graph.AddMembershipArgs{
@@ -219,7 +219,7 @@ func addMembers(clients *config.AggregatedClient, memberships *[]graph.GraphMemb
 }
 
 // Remove members from a group using the AzDO REST API. If any error is encountered, the function immediately returns.
-func removeMembers(clients *config.AggregatedClient, memberships *[]graph.GraphMembership) error {
+func removeMembers(clients *client.AggregatedClient, memberships *[]graph.GraphMembership) error {
 	if memberships != nil {
 		for _, membership := range *memberships {
 			err := clients.GraphClient.RemoveMembership(clients.Ctx, graph.RemoveMembershipArgs{
@@ -257,7 +257,7 @@ func buildMembership(group string, member string) *graph.GraphMembership {
 }
 
 func resourceGroupMembershipRead(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	group := d.Get("group").(string)
 
 	actualMemberships, err := getGroupMemberships(clients, group)
@@ -282,7 +282,7 @@ func resourceGroupMembershipRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func getGroupMemberships(clients *config.AggregatedClient, groupDescriptor string) (*[]graph.GraphMembership, error) {
+func getGroupMemberships(clients *client.AggregatedClient, groupDescriptor string) (*[]graph.GraphMembership, error) {
 	return clients.GraphClient.ListMemberships(clients.Ctx, graph.ListMembershipsArgs{
 		SubjectDescriptor: &groupDescriptor,
 		Direction:         &graph.GraphTraversalDirectionValues.Down,

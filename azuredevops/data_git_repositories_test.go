@@ -13,9 +13,9 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/testhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/testhelper"
 	"github.com/stretchr/testify/require"
 )
 
@@ -85,7 +85,7 @@ func TestGitRepositoriesDataSource_Read_TestHandleError(t *testing.T) {
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
 	repoClient := azdosdkmocks.NewMockGitClient(ctrl)
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: repoClient,
 		GraphClient:    graphClient,
 		Ctx:            context.Background(),
@@ -118,7 +118,7 @@ func TestGitRepositoriesDataSource_Read_TestHandleErrorWithSpecificRepository(t 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
 	repoClient := azdosdkmocks.NewMockGitClient(ctrl)
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: repoClient,
 		GraphClient:    graphClient,
 		Ctx:            context.Background(),
@@ -153,7 +153,7 @@ func TestGitRepositoriesDataSource_Read_NoRepositories(t *testing.T) {
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
 	repoClient := azdosdkmocks.NewMockGitClient(ctrl)
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: repoClient,
 		GraphClient:    graphClient,
 		Ctx:            context.Background(),
@@ -185,7 +185,7 @@ func TestGitRepositoriesDataSource_Read_AllRepositories(t *testing.T) {
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
 	repoClient := azdosdkmocks.NewMockGitClient(ctrl)
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: repoClient,
 		GraphClient:    graphClient,
 		Ctx:            context.Background(),
@@ -217,7 +217,7 @@ func TestGitRepositoriesDataSource_Read_AllRepositoriesByProject(t *testing.T) {
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
 	repoClient := azdosdkmocks.NewMockGitClient(ctrl)
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: repoClient,
 		GraphClient:    graphClient,
 		Ctx:            context.Background(),
@@ -266,7 +266,7 @@ func TestGitRepositoriesDataSource_Read_SingleRepository(t *testing.T) {
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
 	repoClient := azdosdkmocks.NewMockGitClient(ctrl)
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		GitReposClient: repoClient,
 		GraphClient:    graphClient,
 		Ctx:            context.Background(),

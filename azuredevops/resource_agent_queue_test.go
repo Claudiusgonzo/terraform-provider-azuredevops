@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -135,9 +135,9 @@ func generateResourceData(t *testing.T, project *string, poolID *int, resourceID
 	return resourceData
 }
 
-func generateMocks(ctrl *gomock.Controller) (*azdosdkmocks.MockTaskagentClient, *config.AggregatedClient) {
+func generateMocks(ctrl *gomock.Controller) (*azdosdkmocks.MockTaskagentClient, *client.AggregatedClient) {
 	agentClient := azdosdkmocks.NewMockTaskagentClient(ctrl)
-	return agentClient, &config.AggregatedClient{
+	return agentClient, &client.AggregatedClient{
 		TaskAgentClient: agentClient,
 		Ctx:             context.Background(),
 	}

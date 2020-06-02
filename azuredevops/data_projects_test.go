@@ -16,9 +16,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/testhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/testhelper"
 	"github.com/stretchr/testify/require"
 )
 
@@ -91,7 +91,7 @@ func TestDataSourceProjects_Read_TestFindProjectByName(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -131,7 +131,7 @@ func TestDataSourceProjects_Read_TestEmptyProjectList(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -164,7 +164,7 @@ func TestDataSourceProjects_Read_TestFindAllProjects(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -197,7 +197,7 @@ func TestDataSourceProjects_Read_TestDuplicateProjectId(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -230,7 +230,7 @@ func TestDataSourceProjects_Read_TestFindProjectsWithState(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -264,7 +264,7 @@ func TestDataSourceProjects_Read_TestHandleError(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}
@@ -290,7 +290,7 @@ func TestDataSourceProjects_Read_TestContinuationToken(t *testing.T) {
 	defer ctrl.Finish()
 
 	coreClient := azdosdkmocks.NewMockCoreClient(ctrl)
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		CoreClient: coreClient,
 		Ctx:        context.Background(),
 	}

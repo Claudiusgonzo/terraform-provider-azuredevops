@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/require"
 )
 
@@ -125,7 +125,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Create_DoesNotSwallowError(t *testing
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
 
 		buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-		clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+		clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 		expectedArgs := serviceendpoint.CreateServiceEndpointArgs{Endpoint: &resource, Project: azurermTestServiceEndpointAzureRMProjectID}
 		buildClient.
@@ -151,7 +151,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Read_DoesNotSwallowError(t *testing.T
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
 
 		buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-		clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+		clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 		expectedArgs := serviceendpoint.GetServiceEndpointDetailsArgs{EndpointId: resource.Id, Project: azurermTestServiceEndpointAzureRMProjectID}
 		buildClient.
@@ -176,7 +176,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Delete_DoesNotSwallowError(t *testing
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
 
 		buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-		clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+		clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 		expectedArgs := serviceendpoint.DeleteServiceEndpointArgs{EndpointId: resource.Id, Project: azurermTestServiceEndpointAzureRMProjectID}
 		buildClient.
@@ -201,7 +201,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Update_DoesNotSwallowError(t *testing
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
 
 		buildClient := azdosdkmocks.NewMockServiceendpointClient(ctrl)
-		clients := &config.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
+		clients := &client.AggregatedClient{ServiceEndpointClient: buildClient, Ctx: context.Background()}
 
 		expectedArgs := serviceendpoint.UpdateServiceEndpointArgs{
 			Endpoint:   &resource,

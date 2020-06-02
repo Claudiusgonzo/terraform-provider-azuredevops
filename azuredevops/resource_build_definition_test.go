@@ -14,9 +14,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/tfhelper"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 	"github.com/stretchr/testify/require"
 )
 
@@ -255,7 +255,7 @@ func TestAzureDevOpsBuildDefinition_ValidatesServiceConnection_Bitbucket(t *test
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	err := resourceBuildDefinitionCreate(resourceData, clients)
 	require.NotNil(t, err)
@@ -319,7 +319,7 @@ func TestAzureDevOpsBuildDefinition_Create_DoesNotSwallowError(t *testing.T) {
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.CreateDefinitionArgs{Definition: &testBuildDefinition, Project: &testProjectID}
 	buildClient.
@@ -341,7 +341,7 @@ func TestAzureDevOpsBuildDefinition_Read_DoesNotSwallowError(t *testing.T) {
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.GetDefinitionArgs{DefinitionId: testBuildDefinition.Id, Project: &testProjectID}
 	buildClient.
@@ -363,7 +363,7 @@ func TestAzureDevOpsBuildDefinition_Delete_DoesNotSwallowError(t *testing.T) {
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.DeleteDefinitionArgs{DefinitionId: testBuildDefinition.Id, Project: &testProjectID}
 	buildClient.
@@ -385,7 +385,7 @@ func TestAzureDevOpsBuildDefinition_Update_DoesNotSwallowError(t *testing.T) {
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.UpdateDefinitionArgs{
 		Definition:   &testBuildDefinition,

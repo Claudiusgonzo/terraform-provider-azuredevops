@@ -17,8 +17,8 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/memberentitlementmanagement"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
 	"github.com/microsoft/terraform-provider-azuredevops/azdosdkmocks"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +28,7 @@ func TestUserEntitlement_CreateUserEntitlement_DoNotAllowToSetOridinIdAndPrincip
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		MemberEntitleManagementClient: nil,
 		Ctx:                           context.Background(),
 	}
@@ -50,9 +50,9 @@ func TestUserEntitlement_CreateUserEntitlement_WithPrincipalName(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -68,7 +68,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithPrincipalName(t *testing.T) {
 	resourceData.Set("principal_name", principalName)
 
 	expectedIsSuccess := true
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		AddUserEntitlement(gomock.Any(), MatchAddUserEntitlementArgs(t, memberentitlementmanagement.AddUserEntitlementArgs{
 			UserEntitlement: mockUserEntitlement,
@@ -79,7 +79,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithPrincipalName(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), memberentitlementmanagement.GetUserEntitlementArgs{
 			UserId: mockUserEntitlement.Id,
@@ -95,7 +95,7 @@ func TestUserEntitlement_CreateUserEntitlement_Need_OriginID_Or_PrincipalName(t 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	clients := &config.AggregatedClient{
+	clients := &client.AggregatedClient{
 		MemberEntitleManagementClient: nil,
 		Ctx:                           context.Background(),
 	}
@@ -114,9 +114,9 @@ func TestUserEntitlement_CreateUserEntitlement_WithError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -128,7 +128,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithError(t *testing.T) {
 	resourceData.Set("principal_name", principalName)
 
 	// No error but it has a error on the response.
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		AddUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(nil, fmt.Errorf("error foo")).
@@ -143,9 +143,9 @@ func TestUserEntitlement_CreateUserEntitlement_WithEarlyAdopter(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -167,7 +167,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithEarlyAdopter(t *testing.T) {
 	expectedIsSuccess := false
 
 	// No error but it has a error on the response.
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		AddUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(&memberentitlementmanagement.UserEntitlementsPostResponse{
@@ -188,9 +188,9 @@ func TestUserEntitlement_Update_TestChangeEntitlement(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -203,7 +203,7 @@ func TestUserEntitlement_Update_TestChangeEntitlement(t *testing.T) {
 	mockUserEntitlement := getMockUserEntitlement(&id, accountLicenseType, origin, originID, principalName, descriptor)
 	expectedIsSuccess := true
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		UpdateUserEntitlement(gomock.Any(), memberentitlementmanagement.UpdateUserEntitlementArgs{
 			UserId: &id,
@@ -228,7 +228,7 @@ func TestUserEntitlement_Update_TestChangeEntitlement(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), memberentitlementmanagement.GetUserEntitlementArgs{
 			UserId: mockUserEntitlement.Id,
@@ -251,9 +251,9 @@ func TestUserEntitlement_CreateUpdate_TestBasicEntitlement(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -266,7 +266,7 @@ func TestUserEntitlement_CreateUpdate_TestBasicEntitlement(t *testing.T) {
 	mockUserEntitlement := getMockUserEntitlement(&id, accountLicenseType, origin, originID, principalName, descriptor)
 	expectedIsSuccess := true
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		AddUserEntitlement(gomock.Any(), MatchAddUserEntitlementArgs(t, memberentitlementmanagement.AddUserEntitlementArgs{
 			UserEntitlement: mockUserEntitlement,
@@ -277,7 +277,7 @@ func TestUserEntitlement_CreateUpdate_TestBasicEntitlement(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), memberentitlementmanagement.GetUserEntitlementArgs{
 			UserId: mockUserEntitlement.Id,
@@ -297,9 +297,9 @@ func TestUserEntitlement_Import_TestUPN(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -311,7 +311,7 @@ func TestUserEntitlement_Import_TestUPN(t *testing.T) {
 	id := uuid.New()
 	mockUserEntitlement := getMockUserEntitlement(&id, accountLicenseType, origin, originID, principalName, descriptor)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlements(gomock.Any(), gomock.Any()).
 		Return(&memberentitlementmanagement.PagedGraphMemberList{
@@ -336,9 +336,9 @@ func TestUserEntitlement_Import_TestID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -358,9 +358,9 @@ func TestUserEntilement_Import_TestInvalidValue(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -378,9 +378,9 @@ func TestUserEntitlement_Create_TestErrorFormatting(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -391,7 +391,7 @@ func TestUserEntitlement_Create_TestErrorFormatting(t *testing.T) {
 	k2 := interface{}("9998")
 	v2 := interface{}("Error2")
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		AddUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(&memberentitlementmanagement.UserEntitlementsPostResponse{
@@ -415,7 +415,7 @@ func TestUserEntitlement_Create_TestErrorFormatting(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(nil, nil).
@@ -434,16 +434,16 @@ func TestUserEntitlement_Create_TestEmptyErrors(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
 	id, _ := uuid.NewUUID()
 	expectedIsSuccess := false
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		AddUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(&memberentitlementmanagement.UserEntitlementsPostResponse{
@@ -458,7 +458,7 @@ func TestUserEntitlement_Create_TestEmptyErrors(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(nil, nil).
@@ -476,9 +476,9 @@ func TestUserEntitlement_Update_TestErrorFormatting(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
@@ -489,7 +489,7 @@ func TestUserEntitlement_Update_TestErrorFormatting(t *testing.T) {
 	k2 := interface{}("9998")
 	v2 := interface{}("Error2")
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		UpdateUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(&memberentitlementmanagement.UserEntitlementsPatchResponse{
@@ -515,7 +515,7 @@ func TestUserEntitlement_Update_TestErrorFormatting(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(nil, nil).
@@ -535,16 +535,16 @@ func TestUserEntitlement_Update_TestEmptyErrors(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	client := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
-	clients := &config.AggregatedClient{
-		MemberEntitleManagementClient: client,
+	memberEntitlementClient := azdosdkmocks.NewMockMemberentitlementmanagementClient(ctrl)
+	clients := &client.AggregatedClient{
+		MemberEntitleManagementClient: memberEntitlementClient,
 		Ctx:                           context.Background(),
 	}
 
 	id, _ := uuid.NewUUID()
 	expectedIsSuccess := false
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		UpdateUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(&memberentitlementmanagement.UserEntitlementsPatchResponse{
@@ -561,7 +561,7 @@ func TestUserEntitlement_Update_TestEmptyErrors(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	client.
+	memberEntitlementClient.
 		EXPECT().
 		GetUserEntitlement(gomock.Any(), gomock.Any()).
 		Return(nil, nil).

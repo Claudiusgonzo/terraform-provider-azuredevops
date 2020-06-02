@@ -7,9 +7,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/suppress"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 )
 
 const msgErrorFailedResourceCreate = "error creating authorized resource: %+v"
@@ -53,7 +53,7 @@ func resourceResourceAuthorization() *schema.Resource {
 }
 
 func resourceResourceAuthorizationCreate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	authorizedResource, projectID, err := expandAuthorizedResource(d)
 	if err != nil {
 		return fmt.Errorf(msgErrorFailedResourceCreate, err)
@@ -69,7 +69,7 @@ func resourceResourceAuthorizationCreate(d *schema.ResourceData, m interface{}) 
 
 func resourceResourceAuthorizationRead(d *schema.ResourceData, m interface{}) error {
 	ctx := context.Background()
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 
 	authorizedResource, projectID, err := expandAuthorizedResource(d)
 	if err != nil {
@@ -104,7 +104,7 @@ func resourceResourceAuthorizationRead(d *schema.ResourceData, m interface{}) er
 }
 
 func resourceResourceAuthorizationDelete(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	authorizedResource, projectID, err := expandAuthorizedResource(d)
 	if err != nil {
 		return fmt.Errorf(msgErrorFailedResourceDelete, err)
@@ -123,7 +123,7 @@ func resourceResourceAuthorizationDelete(d *schema.ResourceData, m interface{}) 
 }
 
 func resourceResourceAuthorizationUpdate(d *schema.ResourceData, m interface{}) error {
-	clients := m.(*config.AggregatedClient)
+	clients := m.(*client.AggregatedClient)
 	authorizedResource, projectID, err := expandAuthorizedResource(d)
 	if err != nil {
 		return fmt.Errorf(msgErrorFailedResourceUpdate, err)
@@ -156,7 +156,7 @@ func expandAuthorizedResource(d *schema.ResourceData) (*build.DefinitionResource
 	return &resourceRef, d.Get("project_id").(string), nil
 }
 
-func sendAuthorizedResourceToAPI(clients *config.AggregatedClient, resourceRef *build.DefinitionResourceReference, project string) error {
+func sendAuthorizedResourceToAPI(clients *client.AggregatedClient, resourceRef *build.DefinitionResourceReference, project string) error {
 	ctx := context.Background()
 
 	_, err := clients.BuildClient.AuthorizeProjectResources(ctx, build.AuthorizeProjectResourcesArgs{

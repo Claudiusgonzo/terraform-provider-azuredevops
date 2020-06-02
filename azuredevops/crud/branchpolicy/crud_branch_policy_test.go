@@ -16,8 +16,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/policy"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/converter"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 )
 
 var projectID = uuid.New().String()
@@ -71,7 +71,7 @@ func TestBranchPolicyCRUD_CreateError_NotSwallowed(t *testing.T) {
 	resourceData := getFlattenedResourceData(t)
 
 	policyClient := azdosdkmocks.NewMockPolicyClient(ctrl)
-	clients := &config.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
 
 	expectedArgs := policy.CreatePolicyConfigurationArgs{
 		Configuration: testPolicy,
@@ -96,7 +96,7 @@ func TestBranchPolicyCRUD_ReadError_NotSwallowed(t *testing.T) {
 	resourceData := getFlattenedResourceData(t)
 
 	policyClient := azdosdkmocks.NewMockPolicyClient(ctrl)
-	clients := &config.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
 
 	expectedArgs := policy.GetPolicyConfigurationArgs{
 		ConfigurationId: testPolicy.Id,
@@ -121,7 +121,7 @@ func TestBranchPolicyCRUD_UpdateError_NotSwallowed(t *testing.T) {
 	resourceData := getFlattenedResourceData(t)
 
 	policyClient := azdosdkmocks.NewMockPolicyClient(ctrl)
-	clients := &config.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
 
 	expectedArgs := policy.UpdatePolicyConfigurationArgs{
 		ConfigurationId: testPolicy.Id,
@@ -147,7 +147,7 @@ func TestBranchPolicyCRUD_DeleteError_NotSwallowed(t *testing.T) {
 	resourceData := getFlattenedResourceData(t)
 
 	policyClient := azdosdkmocks.NewMockPolicyClient(ctrl)
-	clients := &config.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{PolicyClient: policyClient, Ctx: context.Background()}
 
 	expectedArgs := policy.DeletePolicyConfigurationArgs{
 		ConfigurationId: testPolicy.Id,
