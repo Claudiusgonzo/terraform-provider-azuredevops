@@ -108,7 +108,7 @@ func createkubernetesTestServiceEndpointForServiceAccount() *serviceendpoint.Ser
 }
 
 // verifies that the flatten/expand round trip yields the same service endpoint for autorization type "AzureSubscription"
-func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionExpandFlattenRoundtrip(t *testing.T) {
+func TestServiceEndpointKubernetesForAzureSubscriptionExpandFlattenRoundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointKubernetes().Schema, nil)
 	kubernetesTestServiceEndpointForAzureSubscription := createkubernetesTestServiceEndpointForAzureSubscription()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
@@ -121,7 +121,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionExpandFlattenRo
 }
 
 // verifies that if an error is produced on create, the error is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionCreateDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForAzureSubscriptionCreateDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -145,7 +145,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionCreateDoesNotSw
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionReadDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForAzureSubscriptionReadDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -169,7 +169,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionReadDoesNotSwal
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionDeleteDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForAzureSubscriptionDeleteDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -193,7 +193,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionDeleteDoesNotSw
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionUpdateDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForAzureSubscriptionUpdateDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -222,7 +222,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionUpdateDoesNotSw
 }
 
 // verifies that the flatten/expand round trip yields the same service endpoint for autorization type "Kubeconfig"
-func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigExpandFlattenRoundtrip(t *testing.T) {
+func TestServiceEndpointKubernetesForKubeconfigExpandFlattenRoundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointKubernetes().Schema, nil)
 	configureKubeconfig(resourceData)
 	kubernetesTestServiceEndpointForKubeconfig := createkubernetesTestServiceEndpointForKubeconfig()
@@ -235,7 +235,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigExpandFlattenRoundtrip
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigCreateDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForKubeconfigCreateDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -260,7 +260,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigCreateDoesNotSwallowEr
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigReadDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForKubeconfigReadDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -285,7 +285,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigReadDoesNotSwallowErro
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigDeleteDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForKubeconfigDeleteDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -310,7 +310,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigDeleteDoesNotSwallowEr
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigUpdateDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForKubeconfigUpdateDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -340,7 +340,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigUpdateDoesNotSwallowEr
 }
 
 // verifies that the flatten/expand round trip yields the same service endpoint for autorization type "ServiceAccount"
-func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountExpandFlattenRoundtrip(t *testing.T) {
+func TestServiceEndpointKubernetesForServiceAccountExpandFlattenRoundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointKubernetes().Schema, nil)
 	configureServiceAccount(resourceData)
 	kubernetesTestServiceEndpointForServiceAccount := createkubernetesTestServiceEndpointForServiceAccount()
@@ -354,7 +354,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountExpandFlattenRound
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountCreateDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForServiceAccountCreateDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -379,7 +379,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountCreateDoesNotSwall
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountReadDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForServiceAccountReadDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -404,7 +404,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountReadDoesNotSwallow
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountDeleteDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForServiceAccountDeleteDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -429,7 +429,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountDeleteDoesNotSwall
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountUpdateDoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointKubernetesForServiceAccountUpdateDoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

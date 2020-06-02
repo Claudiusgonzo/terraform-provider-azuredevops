@@ -32,7 +32,7 @@ var testAgentPool = taskagent.TaskAgentPool{
 }
 
 // verifies that the flatten/expand round trip yields the same agent pool definition
-func TestAzureDevOpsAgentPool_ExpandFlatten_Roundtrip(t *testing.T) {
+func TestAgentPool_ExpandFlatten_Roundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &testAgentPool)
 
@@ -42,7 +42,7 @@ func TestAzureDevOpsAgentPool_ExpandFlatten_Roundtrip(t *testing.T) {
 }
 
 // verifies that the create operation is considered failed if the API call fails.
-func TestAzureDevOpsAgentPool_CreateAgentPool_DoesNotSwallowErrorFromFailedAddAgentCall(t *testing.T) {
+func TestAgentPool_CreateAgentPool_DoesNotSwallowErrorFromFailedAddAgentCall(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -67,7 +67,7 @@ func TestAzureDevOpsAgentPool_CreateAgentPool_DoesNotSwallowErrorFromFailedAddAg
 	require.Equal(t, "AddAgentPool() Failed", err.Error())
 }
 
-func TestAzureDevOpsAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
+func TestAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
 	client := &client.AggregatedClient{}
 
 	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
@@ -78,7 +78,7 @@ func TestAzureDevOpsAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testi
 	require.Equal(t, "Error getting agent pool Id: strconv.Atoi: parsing \"\": invalid syntax", err.Error())
 }
 
-func TestAzureDevOpsAgentPool_UpdateAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
+func TestAgentPool_UpdateAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
 	client := &client.AggregatedClient{}
 
 	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
@@ -89,7 +89,7 @@ func TestAzureDevOpsAgentPool_UpdateAgentPool_ReturnsErrorIfIdReadFails(t *testi
 	require.Equal(t, "Error converting terraform data model to AzDO agent pool reference: Error getting agent pool Id: strconv.Atoi: parsing \"\": invalid syntax", err.Error())
 }
 
-func TestAzureDevOpsAgentPool_UpdateAgentPool_UpdateAndRead(t *testing.T) {
+func TestAgentPool_UpdateAgentPool_UpdateAndRead(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -141,7 +141,7 @@ func TestAzureDevOpsAgentPool_UpdateAgentPool_UpdateAndRead(t *testing.T) {
 }
 
 // validates supported pool types are allowed by the schema
-func TestAzureDevOpsAgentPoolDefinition_PoolTypeIsCorrect(t *testing.T) {
+func TestAgentPoolDefinition_PoolTypeIsCorrect(t *testing.T) {
 	validPoolTypes := []string{
 		string(taskagent.TaskAgentPoolTypeValues.Automation),
 		string(taskagent.TaskAgentPoolTypeValues.Deployment),
@@ -155,7 +155,7 @@ func TestAzureDevOpsAgentPoolDefinition_PoolTypeIsCorrect(t *testing.T) {
 }
 
 // validates invalid pool types are rejected by the schema
-func TestAzureDevOpsAgentPoolDefinition_WhenPoolTypeIsNotCorrect_ReturnsError(t *testing.T) {
+func TestAgentPoolDefinition_WhenPoolTypeIsNotCorrect_ReturnsError(t *testing.T) {
 	invalidPoolTypes := []string{"", "unknown"}
 	poolTypeSchema := ResourceAgentPool().Schema["pool_type"]
 

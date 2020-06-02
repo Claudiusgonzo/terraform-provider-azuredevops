@@ -44,7 +44,7 @@ var dockerRegistryTestServiceEndpoint = serviceendpoint.ServiceEndpoint{ //todo 
 }
 
 // verifies that the flatten/expand round trip yields the same service endpoint
-func TestAzureDevOpsServiceEndpointDockerRegistry_ExpandFlatten_Roundtrip(t *testing.T) {
+func TestServiceEndpointDockerRegistry_ExpandFlatten_Roundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointDockerRegistry().Schema, nil)
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
@@ -56,7 +56,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_ExpandFlatten_Roundtrip(t *tes
 }
 
 // verifies that if an error is produced on create, the error is not swallowed
-func TestAzureDevOpsServiceEndpointDockerRegistry_Create_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointDockerRegistry_Create_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -79,7 +79,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Create_DoesNotSwallowError(t *
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointDockerRegistry_Read_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointDockerRegistry_Read_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,7 +102,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Read_DoesNotSwallowError(t *te
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsServiceEndpointDockerRegistry_Delete_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointDockerRegistry_Delete_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -125,7 +125,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Delete_DoesNotSwallowError(t *
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsServiceEndpointDockerRegistry_Update_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointDockerRegistry_Update_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

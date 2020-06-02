@@ -38,7 +38,7 @@ var ghTestServiceEndpoint = serviceendpoint.ServiceEndpoint{
 }
 
 // verifies that the flatten/expand round trip yields the same service endpoint
-func TestAzureDevOpsServiceEndpointGitHub_ExpandFlatten_Roundtrip(t *testing.T) {
+func TestServiceEndpointGitHub_ExpandFlatten_Roundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointGitHub().Schema, nil)
 	configureAuthPersonal(resourceData)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
@@ -51,7 +51,7 @@ func TestAzureDevOpsServiceEndpointGitHub_ExpandFlatten_Roundtrip(t *testing.T) 
 }
 
 // verifies that if an error is produced on create, the error is not swallowed
-func TestAzureDevOpsServiceEndpointGitHub_Create_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointGitHub_Create_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -75,7 +75,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Create_DoesNotSwallowError(t *testing.
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointGitHub_Read_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointGitHub_Read_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -98,7 +98,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Read_DoesNotSwallowError(t *testing.T)
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsServiceEndpointGitHub_Delete_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointGitHub_Delete_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -121,7 +121,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Delete_DoesNotSwallowError(t *testing.
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsServiceEndpointGitHub_Update_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointGitHub_Update_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

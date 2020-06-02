@@ -39,7 +39,7 @@ var resourceReferenceNotAuthorized = build.DefinitionResourceReference{
 	Type:       converter.String("endpoint"),
 }
 
-func TestAzureDevOpsResourceAuthorization_FlattenExpand_RoundTripTestAzureDevOpsResourceAuthorization_FlattenExpand_RoundTrip(t *testing.T) {
+func TestResourceAuthorization_FlattenExpand_RoundTripTestResourceAuthorization_FlattenExpand_RoundTrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceResourceAuthorization().Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
@@ -49,7 +49,7 @@ func TestAzureDevOpsResourceAuthorization_FlattenExpand_RoundTripTestAzureDevOps
 	require.Equal(t, projectId, projectIdAfterRoundtrip)
 }
 
-func TestAzureDevOpsResourceAuthorization_Create_DoesNotSwallowError(t *testing.T) {
+func TestResourceAuthorization_Create_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -59,7 +59,7 @@ func TestAzureDevOpsResourceAuthorization_Create_DoesNotSwallowError(t *testing.
 	require.Contains(t, err.Error(), "CreateResourceAuthorization() Failed")
 }
 
-func TestAzureDevOpsResourceAuthorization_Update_DoesNotSwallowError(t *testing.T) {
+func TestResourceAuthorization_Update_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -89,7 +89,7 @@ func prepareForCreateOrUpdate(t *testing.T, ctrl *gomock.Controller, expectedMes
 	return r, resourceData, clients
 }
 
-func TestAzureDevOpsResourceAuthorization_Read_DoesNotSwallowError(t *testing.T) {
+func TestResourceAuthorization_Read_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -115,7 +115,7 @@ func TestAzureDevOpsResourceAuthorization_Read_DoesNotSwallowError(t *testing.T)
 	require.Contains(t, err.Error(), "ReadResourceAuthorization() Failed")
 }
 
-func TestAzureDevOpsResourceAuthorization_Delete_DoesNotSwallowError(t *testing.T) {
+func TestResourceAuthorization_Delete_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

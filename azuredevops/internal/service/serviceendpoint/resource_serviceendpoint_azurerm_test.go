@@ -103,7 +103,7 @@ var azurermTestServiceEndpointsAzureRM = []serviceendpoint.ServiceEndpoint{
 }
 
 // verifies that the flatten/expand round trip yields the same service endpoint
-func TestAzureDevOpsServiceEndpointAzureRM_ExpandFlatten_Roundtrip(t *testing.T) {
+func TestServiceEndpointAzureRM_ExpandFlatten_Roundtrip(t *testing.T) {
 	for _, resource := range azurermTestServiceEndpointsAzureRM {
 		resourceData := getResourceData(t, resource)
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
@@ -115,7 +115,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_ExpandFlatten_Roundtrip(t *testing.T)
 }
 
 // verifies that if an error is produced on create, the error is not swallowed
-func TestAzureDevOpsServiceEndpointAzureRM_Create_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointAzureRM_Create_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -141,7 +141,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Create_DoesNotSwallowError(t *testing
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsServiceEndpointAzureRM_Read_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointAzureRM_Read_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -166,7 +166,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Read_DoesNotSwallowError(t *testing.T
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsServiceEndpointAzureRM_Delete_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointAzureRM_Delete_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -191,7 +191,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Delete_DoesNotSwallowError(t *testing
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsServiceEndpointAzureRM_Update_DoesNotSwallowError(t *testing.T) {
+func TestServiceEndpointAzureRM_Update_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -220,7 +220,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Update_DoesNotSwallowError(t *testing
 	}
 }
 
-func TestAzureDevOpsServiceEndpointAzureRM_ExpandCredentials(t *testing.T) {
+func TestServiceEndpointAzureRM_ExpandCredentials(t *testing.T) {
 	spnKeyExistsWithValue := map[string]interface{}{"serviceprincipalkey": "fake-spn-key"}
 	spnKeyExistsWithEmptyValue := map[string]interface{}{"serviceprincipalkey": ""}
 	spnKeyDoesNotExists := map[string]interface{}{}
@@ -240,7 +240,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_ExpandCredentials(t *testing.T) {
 //		Azure DevOps API as an indicator to "not update" the field. The resulting behavior is that
 //		this Terraform Resource will be able to update the Service Endpoint without needing to
 //		pass the password along in each request.
-func TestAzureDevOpsServiceEndpointAzureRM_ExpandHandlesMissingSpnKeyInAPIResponse(t *testing.T) {
+func TestServiceEndpointAzureRM_ExpandHandlesMissingSpnKeyInAPIResponse(t *testing.T) {
 	// step (1)
 	endpoint := getManualAuthServiceEndpoint()
 	resourceData := getResourceData(t, endpoint)

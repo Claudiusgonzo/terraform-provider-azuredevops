@@ -193,7 +193,7 @@ func testBuildDefinitionBitbucket() build.BuildDefinition {
 }
 
 // validates that all supported repo types are allowed by the schema
-func TestAzureDevOpsBuildDefinition_RepoTypeListIsCorrect(t *testing.T) {
+func TestBuildDefinition_RepoTypeListIsCorrect(t *testing.T) {
 	expectedRepoTypes := []string{"GitHub", "TfsGit", "Bitbucket"}
 	repoSchema := ResourceBuildDefinition().Schema["repository"]
 	repoTypeSchema := repoSchema.Elem.(*schema.Resource).Schema["repo_type"]
@@ -205,7 +205,7 @@ func TestAzureDevOpsBuildDefinition_RepoTypeListIsCorrect(t *testing.T) {
 }
 
 // validates that an error is thrown if any of the un-supported path characters are used
-func TestAzureDevOpsBuildDefinition_PathInvalidCharacterListIsError(t *testing.T) {
+func TestBuildDefinition_PathInvalidCharacterListIsError(t *testing.T) {
 	expectedInvalidPathCharacters := []string{"<", ">", "|", ":", "$", "@", "\"", "/", "%", "+", "*", "?"}
 	pathSchema := ResourceBuildDefinition().Schema["path"]
 
@@ -216,14 +216,14 @@ func TestAzureDevOpsBuildDefinition_PathInvalidCharacterListIsError(t *testing.T
 }
 
 // validates that an error is thrown if path does not start with slash
-func TestAzureDevOpsBuildDefinition_PathInvalidStartingSlashIsError(t *testing.T) {
+func TestBuildDefinition_PathInvalidStartingSlashIsError(t *testing.T) {
 	pathSchema := ResourceBuildDefinition().Schema["path"]
 	_, errors := pathSchema.ValidateFunc("dir\\dir", "")
 	require.Equal(t, "path must start with backslash", errors[0].Error())
 }
 
 // verifies that GitHub repo urls are expanded to URLs Azure DevOps expects
-func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Github(t *testing.T) {
+func TestBuildDefinition_Expand_RepoUrl_Github(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 	buildDefinitionAfterRoundTrip, projectID, err := expandBuildDefinition(resourceData)
@@ -234,7 +234,7 @@ func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Github(t *testing.T) {
 }
 
 // verifies that Bitbucket repo urls are expanded to URLs Azure DevOps expects
-func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Bitbucket(t *testing.T) {
+func TestBuildDefinition_Expand_RepoUrl_Bitbucket(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	bitBucketBuildDef := testBuildDefinitionBitbucket()
 	flattenBuildDefinition(resourceData, &bitBucketBuildDef, testProjectID)
@@ -246,7 +246,7 @@ func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Bitbucket(t *testing.T) {
 }
 
 // verifies that a service connection is required for bitbucket repos
-func TestAzureDevOpsBuildDefinition_ValidatesServiceConnection_Bitbucket(t *testing.T) {
+func TestBuildDefinition_ValidatesServiceConnection_Bitbucket(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	bitBucketBuildDef := testBuildDefinitionBitbucket()
 	(*bitBucketBuildDef.Repository.Properties)["connectedServiceId"] = ""
@@ -289,7 +289,7 @@ func TestAzureDevOpsBuildDefinition_CITriggers_Bitbucket(t *testing.T) {
 }
 
 // verifies that the flatten/expand round trip yields the same build definition
-func TestAzureDevOpsBuildDefinition_ExpandFlatten_Roundtrip(t *testing.T) {
+func TestBuildDefinition_ExpandFlatten_Roundtrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	for _, triggerGroup := range triggerGroups {
 		testBuildDefinitionWithCustomTriggers := testBuildDefinition
@@ -304,14 +304,14 @@ func TestAzureDevOpsBuildDefinition_ExpandFlatten_Roundtrip(t *testing.T) {
 }
 
 // verifies that an expand will fail if there is insufficient configuration data found in the resource
-func TestAzureDevOpsBuildDefinition_Expand_FailsIfNotEnoughData(t *testing.T) {
+func TestBuildDefinition_Expand_FailsIfNotEnoughData(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	_, _, err := expandBuildDefinition(resourceData)
 	require.NotNil(t, err)
 }
 
 // verifies that if an error is produced on create, the error is not swallowed
-func TestAzureDevOpsBuildDefinition_Create_DoesNotSwallowError(t *testing.T) {
+func TestBuildDefinition_Create_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -333,7 +333,7 @@ func TestAzureDevOpsBuildDefinition_Create_DoesNotSwallowError(t *testing.T) {
 }
 
 // verifies that if an error is produced on a read, it is not swallowed
-func TestAzureDevOpsBuildDefinition_Read_DoesNotSwallowError(t *testing.T) {
+func TestBuildDefinition_Read_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -355,7 +355,7 @@ func TestAzureDevOpsBuildDefinition_Read_DoesNotSwallowError(t *testing.T) {
 }
 
 // verifies that if an error is produced on a delete, it is not swallowed
-func TestAzureDevOpsBuildDefinition_Delete_DoesNotSwallowError(t *testing.T) {
+func TestBuildDefinition_Delete_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -377,7 +377,7 @@ func TestAzureDevOpsBuildDefinition_Delete_DoesNotSwallowError(t *testing.T) {
 }
 
 // verifies that if an error is produced on an update, it is not swallowed
-func TestAzureDevOpsBuildDefinition_Update_DoesNotSwallowError(t *testing.T) {
+func TestBuildDefinition_Update_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
