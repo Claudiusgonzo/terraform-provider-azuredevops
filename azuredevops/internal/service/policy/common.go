@@ -1,4 +1,4 @@
-package branchpolicy
+package policy
 
 import (
 	"encoding/json"
@@ -9,8 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/policy"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
@@ -48,15 +48,15 @@ const (
 	matchTypePrefix string = "Prefix"
 )
 
-// PolicyCrudArgs arguments for GenBasePolicyResource
-type PolicyCrudArgs struct {
+// policyCrudArgs arguments for genBasePolicyResource
+type policyCrudArgs struct {
 	FlattenFunc func(d *schema.ResourceData, policy *policy.PolicyConfiguration, projectID *string) error
 	ExpandFunc  func(d *schema.ResourceData, typeID uuid.UUID) (*policy.PolicyConfiguration, *string, error)
 	PolicyType  uuid.UUID
 }
 
-// GenBasePolicyResource creates a Resource with the common elements of a build policy
-func GenBasePolicyResource(crudArgs *PolicyCrudArgs) *schema.Resource {
+// genBasePolicyResource creates a Resource with the common elements of a build policy
+func genBasePolicyResource(crudArgs *policyCrudArgs) *schema.Resource {
 	return &schema.Resource{
 		Create:   genPolicyCreateFunc(crudArgs),
 		Read:     genPolicyReadFunc(crudArgs),
@@ -75,8 +75,8 @@ type commonPolicySettings struct {
 	} `json:"scope"`
 }
 
-// BaseFlattenFunc flattens each of the base elements of the schema
-func BaseFlattenFunc(d *schema.ResourceData, policyConfig *policy.PolicyConfiguration, projectID *string) error {
+// baseFlattenFunc flattens each of the base elements of the schema
+func baseFlattenFunc(d *schema.ResourceData, policyConfig *policy.PolicyConfiguration, projectID *string) error {
 	if policyConfig.Id == nil {
 		d.SetId("")
 		return nil
@@ -120,8 +120,8 @@ func flattenSettings(d *schema.ResourceData, policyConfig *policy.PolicyConfigur
 	return settings, nil
 }
 
-// BaseExpandFunc expands each of the base elements of the schema
-func BaseExpandFunc(d *schema.ResourceData, typeID uuid.UUID) (*policy.PolicyConfiguration, *string, error) {
+// baseExpandFunc expands each of the base elements of the schema
+func baseExpandFunc(d *schema.ResourceData, typeID uuid.UUID) (*policy.PolicyConfiguration, *string, error) {
 	projectID := d.Get(SchemaProjectID).(string)
 
 	policyConfig := policy.PolicyConfiguration{
@@ -219,7 +219,7 @@ func genBaseSchema() map[string]*schema.Schema {
 	}
 }
 
-func genPolicyCreateFunc(crudArgs *PolicyCrudArgs) schema.CreateFunc {
+func genPolicyCreateFunc(crudArgs *policyCrudArgs) schema.CreateFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
 		clients := m.(*client.AggregatedClient)
 		policyConfig, projectID, err := crudArgs.ExpandFunc(d, crudArgs.PolicyType)
@@ -240,7 +240,7 @@ func genPolicyCreateFunc(crudArgs *PolicyCrudArgs) schema.CreateFunc {
 	}
 }
 
-func genPolicyReadFunc(crudArgs *PolicyCrudArgs) schema.ReadFunc {
+func genPolicyReadFunc(crudArgs *policyCrudArgs) schema.ReadFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
 		clients := m.(*client.AggregatedClient)
 		projectID := d.Get(SchemaProjectID).(string)
@@ -268,7 +268,7 @@ func genPolicyReadFunc(crudArgs *PolicyCrudArgs) schema.ReadFunc {
 	}
 }
 
-func genPolicyUpdateFunc(crudArgs *PolicyCrudArgs) schema.UpdateFunc {
+func genPolicyUpdateFunc(crudArgs *policyCrudArgs) schema.UpdateFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
 		clients := m.(*client.AggregatedClient)
 		policyConfig, projectID, err := crudArgs.ExpandFunc(d, crudArgs.PolicyType)
@@ -290,7 +290,7 @@ func genPolicyUpdateFunc(crudArgs *PolicyCrudArgs) schema.UpdateFunc {
 	}
 }
 
-func genPolicyDeleteFunc(crudArgs *PolicyCrudArgs) schema.DeleteFunc {
+func genPolicyDeleteFunc(crudArgs *policyCrudArgs) schema.DeleteFunc {
 	return func(d *schema.ResourceData, m interface{}) error {
 		clients := m.(*client.AggregatedClient)
 		policyConfig, projectID, err := crudArgs.ExpandFunc(d, crudArgs.PolicyType)

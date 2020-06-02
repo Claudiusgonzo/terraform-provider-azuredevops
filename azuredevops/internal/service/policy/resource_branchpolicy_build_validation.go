@@ -1,4 +1,4 @@
-package azuredevops
+package policy
 
 import (
 	"encoding/json"
@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops/policy"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/crud/branchpolicy"
 )
 
 const (
@@ -28,14 +27,14 @@ type buildValidationPolicySettings struct {
 	ValidDuration           int    `json:"validDuration"`
 }
 
-func resourceBranchPolicyBuildValidation() *schema.Resource {
-	resource := branchpolicy.GenBasePolicyResource(&branchpolicy.PolicyCrudArgs{
+func ResourceBranchPolicyBuildValidation() *schema.Resource {
+	resource := genBasePolicyResource(&policyCrudArgs{
 		FlattenFunc: buildValidationFlattenFunc,
 		ExpandFunc:  buildValidationExpandFunc,
-		PolicyType:  branchpolicy.BuildValidation,
+		PolicyType:  BuildValidation,
 	})
 
-	settingsSchema := resource.Schema[branchpolicy.SchemaSettings].Elem.(*schema.Resource).Schema
+	settingsSchema := resource.Schema[SchemaSettings].Elem.(*schema.Resource).Schema
 	settingsSchema[buildDefinitionID] = &schema.Schema{
 		Type:     schema.TypeInt,
 		Required: true,
@@ -65,7 +64,7 @@ func resourceBranchPolicyBuildValidation() *schema.Resource {
 }
 
 func buildValidationFlattenFunc(d *schema.ResourceData, policyConfig *policy.PolicyConfiguration, projectID *string) error {
-	err := branchpolicy.BaseFlattenFunc(d, policyConfig, projectID)
+	err := baseFlattenFunc(d, policyConfig, projectID)
 	if err != nil {
 		return err
 	}
@@ -80,7 +79,7 @@ func buildValidationFlattenFunc(d *schema.ResourceData, policyConfig *policy.Pol
 		return fmt.Errorf("Unable to unmarshal branch policy settings (%+v): %+v", policySettings, err)
 	}
 
-	settingsList := d.Get(branchpolicy.SchemaSettings).([]interface{})
+	settingsList := d.Get(SchemaSettings).([]interface{})
 	settings := settingsList[0].(map[string]interface{})
 
 	settings[buildDefinitionID] = policySettings.BuildDefinitionID
@@ -89,17 +88,17 @@ func buildValidationFlattenFunc(d *schema.ResourceData, policyConfig *policy.Pol
 	settings[queueOnSourceUpdateOnly] = policySettings.QueueOnSourceUpdateOnly
 	settings[validDuration] = policySettings.ValidDuration
 
-	d.Set(branchpolicy.SchemaSettings, settingsList)
+	d.Set(SchemaSettings, settingsList)
 	return nil
 }
 
 func buildValidationExpandFunc(d *schema.ResourceData, typeID uuid.UUID) (*policy.PolicyConfiguration, *string, error) {
-	policyConfig, projectID, err := branchpolicy.BaseExpandFunc(d, typeID)
+	policyConfig, projectID, err := baseExpandFunc(d, typeID)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	settingsList := d.Get(branchpolicy.SchemaSettings).([]interface{})
+	settingsList := d.Get(SchemaSettings).([]interface{})
 	settings := settingsList[0].(map[string]interface{})
 	policySettings := policyConfig.Settings.(map[string]interface{})
 

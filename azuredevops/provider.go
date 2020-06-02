@@ -4,6 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/policy"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/serviceendpoint"
 )
 
@@ -12,8 +13,8 @@ func Provider() *schema.Provider {
 	p := &schema.Provider{
 		ResourcesMap: map[string]*schema.Resource{
 			"azuredevops_resource_authorization":         resourceResourceAuthorization(),
-			"azuredevops_branch_policy_build_validation": resourceBranchPolicyBuildValidation(),
-			"azuredevops_branch_policy_min_reviewers":    resourceBranchPolicyMinReviewers(),
+			"azuredevops_branch_policy_build_validation": policy.ResourceBranchPolicyBuildValidation(),
+			"azuredevops_branch_policy_min_reviewers":    policy.ResourceBranchPolicyMinReviewers(),
 			"azuredevops_build_definition":               resourceBuildDefinition(),
 			"azuredevops_project":                        resourceProject(),
 			"azuredevops_variable_group":                 resourceVariableGroup(),
