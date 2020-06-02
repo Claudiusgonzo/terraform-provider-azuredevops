@@ -1,7 +1,7 @@
 // +build all core resource_group_membership
 // +build !exclude_resource_group_membership
 
-package azuredevops
+package graph
 
 import (
 	"context"
@@ -82,7 +82,7 @@ func TestGroupMembership_Read_DoesNotSwallowErrors(t *testing.T) {
 }
 
 func getGroupMembershipResourceData(t *testing.T, group string, members ...string) *schema.ResourceData {
-	d := schema.TestResourceDataRaw(t, resourceGroupMembership().Schema, nil)
+	d := schema.TestResourceDataRaw(t, ResourceGroupMembership().Schema, nil)
 	d.Set("group", group)
 	d.Set("members", members)
 	return d

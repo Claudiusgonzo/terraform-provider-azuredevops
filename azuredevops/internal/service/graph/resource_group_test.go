@@ -1,7 +1,7 @@
 // +build all core resource_group
 // +build !exclude_resource_group
 
-package azuredevops
+package graph
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -68,7 +68,7 @@ func TestGroupResource_Create_TestOriginIdContext(t *testing.T) {
 			}, nil).
 			Times(1)
 
-		resourceData := schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+		resourceData := schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 		resourceData.Set("origin_id", originID)
 
 		err := resourceGroupCreate(resourceData, clients)
@@ -111,7 +111,7 @@ func TestGroupResource_Create_TestHandleErrorMailContext(t *testing.T) {
 			Return(nil, errors.New("CreateGroup() Failed")).
 			Times(1)
 
-		resourceData := schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+		resourceData := schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 		resourceData.Set("mail", email)
 
 		err := resourceGroupCreate(resourceData, clients)
@@ -144,7 +144,7 @@ func TestGroupResource_Create_TestHandleErrorOriginIdContext(t *testing.T) {
 			Return(nil, errors.New("CreateGroup() Failed")).
 			Times(1)
 
-		resourceData := schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+		resourceData := schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 		resourceData.Set("origin_id", originID)
 
 		err := resourceGroupCreate(resourceData, clients)
@@ -189,7 +189,7 @@ func TestGroupResource_Create_TestVstsContext(t *testing.T) {
 			}, nil).
 			Times(1)
 
-		resourceData := schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+		resourceData := schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 		resourceData.Set("display_name", displayName)
 		resourceData.Set("description", description)
 
@@ -244,7 +244,7 @@ func TestGroupResource_Create_TestMailContext(t *testing.T) {
 			}, nil).
 			Times(1)
 
-		resourceData := schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+		resourceData := schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 		resourceData.Set("mail", email)
 
 		err := resourceGroupCreate(resourceData, clients)
@@ -284,21 +284,21 @@ func TestGroupResource_Create_TestParameterCollisions(t *testing.T) {
 	var resourceData *schema.ResourceData
 	var err error
 
-	resourceData = schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+	resourceData = schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 	resourceData.Set("mail", email)
 	resourceData.Set("origin_id", originID)
 
 	err = resourceGroupCreate(resourceData, clients)
 	require.NotNil(t, err)
 
-	resourceData = schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+	resourceData = schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 	resourceData.Set("display_name", displayName)
 	resourceData.Set("origin_id", originID)
 
 	err = resourceGroupCreate(resourceData, clients)
 	require.NotNil(t, err)
 
-	resourceData = schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+	resourceData = schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 	resourceData.Set("display_name", displayName)
 	resourceData.Set("mail", originID)
 
@@ -331,7 +331,7 @@ func TestGroupResource_Create_TestHandleErrorVstsContext(t *testing.T) {
 			Return(nil, errors.New("CreateGroup() Failed")).
 			Times(1)
 
-		resourceData := schema.TestResourceDataRaw(t, resourceGroup().Schema, nil)
+		resourceData := schema.TestResourceDataRaw(t, ResourceGroup().Schema, nil)
 		resourceData.Set("display_name", displayName)
 		resourceData.Set("description", description)
 

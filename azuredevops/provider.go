@@ -5,6 +5,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/git"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/graph"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/policy"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/taskagent"
@@ -27,20 +28,20 @@ func Provider() *schema.Provider {
 			"azuredevops_serviceendpoint_kubernetes":     serviceendpoint.ResourceServiceEndpointKubernetes(),
 			"azuredevops_git_repository":                 git.ResourceGitRepository(),
 			"azuredevops_user_entitlement":               resourceUserEntitlement(),
-			"azuredevops_group_membership":               resourceGroupMembership(),
+			"azuredevops_group_membership":               graph.ResourceGroupMembership(),
 			"azuredevops_agent_pool":                     taskagent.ResourceAgentPool(),
 			"azuredevops_agent_queue":                    taskagent.ResourceAgentQueue(),
-			"azuredevops_group":                          resourceGroup(),
+			"azuredevops_group":                          graph.ResourceGroup(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"azuredevops_agent_pool":       taskagent.DataAgentPool(),
 			"azuredevops_agent_pools":      taskagent.DataAgentPools(),
 			"azuredevops_client_config":    service.DataClientConfig(),
-			"azuredevops_group":            dataGroup(),
+			"azuredevops_group":            graph.DataGroup(),
 			"azuredevops_project":          dataProject(),
 			"azuredevops_projects":         dataProjects(),
 			"azuredevops_git_repositories": git.DataGitRepositories(),
-			"azuredevops_users":            dataUsers(),
+			"azuredevops_users":            graph.DataUsers(),
 		},
 		Schema: map[string]*schema.Schema{
 			"org_service_url": {

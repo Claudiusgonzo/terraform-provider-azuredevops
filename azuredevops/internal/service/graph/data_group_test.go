@@ -1,7 +1,7 @@
 // +build all core data_sources data_group
 // +build !exclude_data_sources !exclude_data_group
 
-package azuredevops
+package graph
 
 import (
 	"context"
@@ -159,7 +159,7 @@ func createGroupsWithDescriptors(groups ...groupMeta) *[]graph.GraphGroup {
 }
 
 func createResourceData(t *testing.T, projectID string, groupName string) *schema.ResourceData {
-	resourceData := schema.TestResourceDataRaw(t, dataGroup().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataGroup().Schema, nil)
 	resourceData.Set("project_id", projectID)
 	resourceData.Set("name", groupName)
 	return resourceData

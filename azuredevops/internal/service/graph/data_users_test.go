@@ -1,7 +1,7 @@
 // +build all core data_sources data_users
 // +build !exclude_data_sources !exclude_data_users
 
-package azuredevops
+package graph
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -97,7 +97,7 @@ func TestDataSourceUser_Read_TestDoesNotSwallowError(t *testing.T) {
 		ListUsers(clients.Ctx, expectedArgs).
 		Return(nil, errors.New("ListUsers() Failed"))
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	err := dataUsersRead(resourceData, clients)
 	require.NotNil(t, err)
 	require.Contains(t, err.Error(), "ListUsers() Failed")
@@ -139,7 +139,7 @@ func TestDataSourceUser_Read_HandlesContinuationToken(t *testing.T) {
 
 	gomock.InOrder(calls...)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	err := dataUsersRead(resourceData, clients)
 	require.Nil(t, err)
 }
@@ -167,7 +167,7 @@ func TestDataSourceUser_Read_TestReadEmptyUser(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	err := dataUsersRead(resourceData, clients)
 	require.Nil(t, err)
 	users, ok := resourceData.GetOk("users")
@@ -201,7 +201,7 @@ func TestDataSourceUser_Read_TestFilterByPricipalName(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	resourceData.Set("principal_name", "DesireeMCollins@jourrapide.com")
 	err := dataUsersRead(resourceData, clients)
 	require.Nil(t, err)
@@ -238,7 +238,7 @@ func TestDataSourceUser_Read_TestFilterByOrigin(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	resourceData.Set("origin", "aad")
 	err := dataUsersRead(resourceData, clients)
 	require.Nil(t, err)
@@ -285,7 +285,7 @@ func TestDataSourceUser_Read_TestFilterByOriginId(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	resourceData.Set("origin_id", "8c840d92-f19e-4dfe-8eab-5a1fd67a3a77")
 	err := dataUsersRead(resourceData, clients)
 	require.Nil(t, err)
@@ -332,7 +332,7 @@ func TestDataSourceUser_Read_TestFilterByOriginOriginId(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	resourceData.Set("origin", "aad")
 	resourceData.Set("origin_id", "8c840d92-f19e-4dfe-8eab-5a1fd67a3a77")
 	err := dataUsersRead(resourceData, clients)
@@ -389,7 +389,7 @@ func TestDataSourceUser_Read_TestFilterBySubjectType(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataUsers().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataUsers().Schema, nil)
 	resourceData.Set("subject_types", schema.NewSet(schema.HashString, []interface{}{"aad"}))
 	err := dataUsersRead(resourceData, clients)
 	require.Nil(t, err)

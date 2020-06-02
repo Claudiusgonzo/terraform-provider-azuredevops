@@ -1,4 +1,4 @@
-package azuredevops
+package graph
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/graph"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 )
 
-func resourceGroupMembership() *schema.Resource {
+func ResourceGroupMembership() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGroupMembershipCreate,
 		Read:   resourceGroupMembershipRead,

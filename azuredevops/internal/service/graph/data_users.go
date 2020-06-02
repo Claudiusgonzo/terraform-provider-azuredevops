@@ -1,4 +1,4 @@
-package azuredevops
+package graph
 
 import (
 	"crypto/sha1"
@@ -14,7 +14,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
-func dataUsers() *schema.Resource {
+func DataUsers() *schema.Resource {
 	return &schema.Resource{
 		Read: dataUsersRead,
 
