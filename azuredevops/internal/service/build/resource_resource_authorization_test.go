@@ -39,7 +39,7 @@ var resourceReferenceNotAuthorized = build.DefinitionResourceReference{
 	Type:       converter.String("endpoint"),
 }
 
-func TestResourceAuthorization_FlattenExpand_RoundTripTestResourceAuthorization_FlattenExpand_RoundTrip(t *testing.T) {
+func TestResourceAuthorization_FlattenExpand_RoundTrip(t *testing.T) {
 	resourceData := schema.TestResourceDataRaw(t, ResourceResourceAuthorization().Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
