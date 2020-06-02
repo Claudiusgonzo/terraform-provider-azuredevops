@@ -4,9 +4,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/build"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/core"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/git"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/graph"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/memberentitlementmanagement"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/policy"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/taskagent"
@@ -16,10 +18,10 @@ import (
 func Provider() *schema.Provider {
 	p := &schema.Provider{
 		ResourcesMap: map[string]*schema.Resource{
-			"azuredevops_resource_authorization":         resourceResourceAuthorization(),
+			"azuredevops_resource_authorization":         build.ResourceResourceAuthorization(),
 			"azuredevops_branch_policy_build_validation": policy.ResourceBranchPolicyBuildValidation(),
 			"azuredevops_branch_policy_min_reviewers":    policy.ResourceBranchPolicyMinReviewers(),
-			"azuredevops_build_definition":               resourceBuildDefinition(),
+			"azuredevops_build_definition":               build.ResourceBuildDefinition(),
 			"azuredevops_project":                        core.ResourceProject(),
 			"azuredevops_variable_group":                 taskagent.ResourceVariableGroup(),
 			"azuredevops_serviceendpoint_azurerm":        serviceendpoint.ResourceServiceEndpointAzureRM(),
@@ -28,7 +30,7 @@ func Provider() *schema.Provider {
 			"azuredevops_serviceendpoint_github":         serviceendpoint.ResourceServiceEndpointGitHub(),
 			"azuredevops_serviceendpoint_kubernetes":     serviceendpoint.ResourceServiceEndpointKubernetes(),
 			"azuredevops_git_repository":                 git.ResourceGitRepository(),
-			"azuredevops_user_entitlement":               resourceUserEntitlement(),
+			"azuredevops_user_entitlement":               memberentitlementmanagement.ResourceUserEntitlement(),
 			"azuredevops_group_membership":               graph.ResourceGroupMembership(),
 			"azuredevops_agent_pool":                     taskagent.ResourceAgentPool(),
 			"azuredevops_agent_queue":                    taskagent.ResourceAgentQueue(),

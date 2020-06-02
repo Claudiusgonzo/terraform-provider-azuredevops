@@ -1,7 +1,7 @@
 // +build all resource_resource_authorization
 // +build !exclude_resource_authorization
 
-package azuredevops
+package build
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -40,7 +40,7 @@ var resourceReferenceNotAuthorized = build.DefinitionResourceReference{
 }
 
 func TestAzureDevOpsResourceAuthorization_FlattenExpand_RoundTripTestAzureDevOpsResourceAuthorization_FlattenExpand_RoundTrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceResourceAuthorization().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceResourceAuthorization().Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
 	resourceReferenceAfterRoundtrip, projectIdAfterRoundtrip, err := expandAuthorizedResource(resourceData)
@@ -70,7 +70,7 @@ func TestAzureDevOpsResourceAuthorization_Update_DoesNotSwallowError(t *testing.
 }
 
 func prepareForCreateOrUpdate(t *testing.T, ctrl *gomock.Controller, expectedMessage string) (*schema.Resource, *schema.ResourceData, *client.AggregatedClient) {
-	r := resourceResourceAuthorization()
+	r := ResourceResourceAuthorization()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
@@ -93,7 +93,7 @@ func TestAzureDevOpsResourceAuthorization_Read_DoesNotSwallowError(t *testing.T)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceResourceAuthorization()
+	r := ResourceResourceAuthorization()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceAuthorized, projectId)
 
@@ -119,7 +119,7 @@ func TestAzureDevOpsResourceAuthorization_Delete_DoesNotSwallowError(t *testing.
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceResourceAuthorization()
+	r := ResourceResourceAuthorization()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenAuthorizedResource(resourceData, &resourceReferenceNotAuthorized, projectId)
 

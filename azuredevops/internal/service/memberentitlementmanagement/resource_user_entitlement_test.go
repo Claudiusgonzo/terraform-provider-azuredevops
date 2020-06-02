@@ -1,7 +1,7 @@
 // +build all resource_user_entitlement
 // +build !exclude_resource_user_entitlement
 
-package azuredevops
+package memberentitlementmanagement
 
 import (
 	"context"
@@ -36,7 +36,7 @@ func TestUserEntitlement_CreateUserEntitlement_DoNotAllowToSetOridinIdAndPrincip
 	originID := "e97b0e7f-0a61-41ad-860c-748ec5fcb20b"
 	principalName := "foobar@microsoft.com"
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.Set("origin_id", originID)
 	resourceData.Set("principal_name", principalName)
 
@@ -64,7 +64,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithPrincipalName(t *testing.T) {
 	id := uuid.New()
 	mockUserEntitlement := getMockUserEntitlement(&id, accountLicenseType, origin, originID, principalName, descriptor)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.Set("principal_name", principalName)
 
 	expectedIsSuccess := true
@@ -100,7 +100,7 @@ func TestUserEntitlement_CreateUserEntitlement_Need_OriginID_Or_PrincipalName(t 
 		Ctx:                           context.Background(),
 	}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	// originID and principalName is not set.
 
 	err := resourceUserEntitlementCreate(resourceData, clients)
@@ -122,7 +122,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithError(t *testing.T) {
 
 	principalName := "foobar@microsoft.com"
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	// resourceData.Set("origin_id", originID)
 	resourceData.Set("account_license_type", "express")
 	resourceData.Set("principal_name", principalName)
@@ -151,7 +151,7 @@ func TestUserEntitlement_CreateUserEntitlement_WithEarlyAdopter(t *testing.T) {
 
 	principalName := "foobar@microsoft.com"
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	// resourceData.Set("origin_id", originID)
 	resourceData.Set("account_license_type", "earlyAdopter")
 	resourceData.Set("principal_name", principalName)
@@ -236,7 +236,7 @@ func TestUserEntitlement_Update_TestChangeEntitlement(t *testing.T) {
 		Return(mockUserEntitlement, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.SetId(id.String())
 	resourceData.Set("principal_name", principalName)
 	resourceData.Set("account_license_type", string(licensing.AccountLicenseTypeValues.Stakeholder))
@@ -284,7 +284,7 @@ func TestUserEntitlement_CreateUpdate_TestBasicEntitlement(t *testing.T) {
 		}).
 		Return(mockUserEntitlement, nil)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.Set("principal_name", principalName)
 	resourceData.Set("account_license_type", "basic")
 
@@ -321,7 +321,7 @@ func TestUserEntitlement_Import_TestUPN(t *testing.T) {
 		}, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.SetId(principalName)
 
 	d, err := importUserEntitlement(resourceData, clients)
@@ -343,7 +343,7 @@ func TestUserEntitlement_Import_TestID(t *testing.T) {
 	}
 
 	id := uuid.New().String()
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.SetId(id)
 
 	d, err := importUserEntitlement(resourceData, clients)
@@ -365,7 +365,7 @@ func TestUserEntilement_Import_TestInvalidValue(t *testing.T) {
 	}
 
 	id := "InvalidValue-a73c5191-e20d"
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.SetId(id)
 
 	d, err := importUserEntitlement(resourceData, clients)
@@ -421,7 +421,7 @@ func TestUserEntitlement_Create_TestErrorFormatting(t *testing.T) {
 		Return(nil, nil).
 		Times(0)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.Set("principal_name", "foobar@microsoft.com")
 
 	err := resourceUserEntitlementCreate(resourceData, clients)
@@ -464,7 +464,7 @@ func TestUserEntitlement_Create_TestEmptyErrors(t *testing.T) {
 		Return(nil, nil).
 		Times(0)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.Set("principal_name", "foobar@microsoft.com")
 
 	err := resourceUserEntitlementCreate(resourceData, clients)
@@ -521,7 +521,7 @@ func TestUserEntitlement_Update_TestErrorFormatting(t *testing.T) {
 		Return(nil, nil).
 		Times(0)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.SetId(id.String())
 	resourceData.Set("principal_name", "foobar@microsoft.com")
 
@@ -567,7 +567,7 @@ func TestUserEntitlement_Update_TestEmptyErrors(t *testing.T) {
 		Return(nil, nil).
 		Times(0)
 
-	resourceData := schema.TestResourceDataRaw(t, resourceUserEntitlement().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceUserEntitlement().Schema, nil)
 	resourceData.SetId(id.String())
 	resourceData.Set("principal_name", "foobar@microsoft.com")
 

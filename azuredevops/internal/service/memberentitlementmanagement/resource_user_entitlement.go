@@ -1,4 +1,4 @@
-package azuredevops
+package memberentitlementmanagement
 
 import (
 	"fmt"
@@ -14,8 +14,8 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/licensing"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/memberentitlementmanagement"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/webapi"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -29,7 +29,7 @@ var (
 	}
 )
 
-func resourceUserEntitlement() *schema.Resource {
+func ResourceUserEntitlement() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceUserEntitlementCreate,
 		Read:   resourceUserEntitlementRead,

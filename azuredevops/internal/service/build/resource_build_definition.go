@@ -1,4 +1,4 @@
-package azuredevops
+package build
 
 import (
 	"errors"
@@ -25,7 +25,7 @@ const (
 	bdVariableAllowOverride = "allow_override"
 )
 
-func resourceBuildDefinition() *schema.Resource {
+func ResourceBuildDefinition() *schema.Resource {
 	filterSchema := map[string]*schema.Schema{
 		"include": {
 			Type:     schema.TypeSet,

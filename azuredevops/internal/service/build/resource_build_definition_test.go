@@ -1,7 +1,7 @@
 // +build all resource_build_definition
 // +build !exclude_resource_build_definition
 
-package azuredevops
+package build
 
 import (
 	"context"
@@ -195,7 +195,7 @@ func testBuildDefinitionBitbucket() build.BuildDefinition {
 // validates that all supported repo types are allowed by the schema
 func TestAzureDevOpsBuildDefinition_RepoTypeListIsCorrect(t *testing.T) {
 	expectedRepoTypes := []string{"GitHub", "TfsGit", "Bitbucket"}
-	repoSchema := resourceBuildDefinition().Schema["repository"]
+	repoSchema := ResourceBuildDefinition().Schema["repository"]
 	repoTypeSchema := repoSchema.Elem.(*schema.Resource).Schema["repo_type"]
 
 	for _, repoType := range expectedRepoTypes {
@@ -207,7 +207,7 @@ func TestAzureDevOpsBuildDefinition_RepoTypeListIsCorrect(t *testing.T) {
 // validates that an error is thrown if any of the un-supported path characters are used
 func TestAzureDevOpsBuildDefinition_PathInvalidCharacterListIsError(t *testing.T) {
 	expectedInvalidPathCharacters := []string{"<", ">", "|", ":", "$", "@", "\"", "/", "%", "+", "*", "?"}
-	pathSchema := resourceBuildDefinition().Schema["path"]
+	pathSchema := ResourceBuildDefinition().Schema["path"]
 
 	for _, invalidCharacter := range expectedInvalidPathCharacters {
 		_, errors := pathSchema.ValidateFunc(`\`+invalidCharacter, "")
@@ -217,14 +217,14 @@ func TestAzureDevOpsBuildDefinition_PathInvalidCharacterListIsError(t *testing.T
 
 // validates that an error is thrown if path does not start with slash
 func TestAzureDevOpsBuildDefinition_PathInvalidStartingSlashIsError(t *testing.T) {
-	pathSchema := resourceBuildDefinition().Schema["path"]
+	pathSchema := ResourceBuildDefinition().Schema["path"]
 	_, errors := pathSchema.ValidateFunc("dir\\dir", "")
 	require.Equal(t, "path must start with backslash", errors[0].Error())
 }
 
 // verifies that GitHub repo urls are expanded to URLs Azure DevOps expects
 func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Github(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 	buildDefinitionAfterRoundTrip, projectID, err := expandBuildDefinition(resourceData)
 
@@ -235,7 +235,7 @@ func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Github(t *testing.T) {
 
 // verifies that Bitbucket repo urls are expanded to URLs Azure DevOps expects
 func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Bitbucket(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	bitBucketBuildDef := testBuildDefinitionBitbucket()
 	flattenBuildDefinition(resourceData, &bitBucketBuildDef, testProjectID)
 	buildDefinitionAfterRoundTrip, projectID, err := expandBuildDefinition(resourceData)
@@ -247,7 +247,7 @@ func TestAzureDevOpsBuildDefinition_Expand_RepoUrl_Bitbucket(t *testing.T) {
 
 // verifies that a service connection is required for bitbucket repos
 func TestAzureDevOpsBuildDefinition_ValidatesServiceConnection_Bitbucket(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	bitBucketBuildDef := testBuildDefinitionBitbucket()
 	(*bitBucketBuildDef.Repository.Properties)["connectedServiceId"] = ""
 	flattenBuildDefinition(resourceData, &bitBucketBuildDef, testProjectID)
@@ -290,7 +290,7 @@ func TestAzureDevOpsBuildDefinition_CITriggers_Bitbucket(t *testing.T) {
 
 // verifies that the flatten/expand round trip yields the same build definition
 func TestAzureDevOpsBuildDefinition_ExpandFlatten_Roundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	for _, triggerGroup := range triggerGroups {
 		testBuildDefinitionWithCustomTriggers := testBuildDefinition
 		testBuildDefinitionWithCustomTriggers.Triggers = &triggerGroup
@@ -305,7 +305,7 @@ func TestAzureDevOpsBuildDefinition_ExpandFlatten_Roundtrip(t *testing.T) {
 
 // verifies that an expand will fail if there is insufficient configuration data found in the resource
 func TestAzureDevOpsBuildDefinition_Expand_FailsIfNotEnoughData(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	_, _, err := expandBuildDefinition(resourceData)
 	require.NotNil(t, err)
 }
@@ -315,7 +315,7 @@ func TestAzureDevOpsBuildDefinition_Create_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
@@ -337,7 +337,7 @@ func TestAzureDevOpsBuildDefinition_Read_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
@@ -359,7 +359,7 @@ func TestAzureDevOpsBuildDefinition_Delete_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
@@ -381,7 +381,7 @@ func TestAzureDevOpsBuildDefinition_Update_DoesNotSwallowError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinition, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
@@ -404,7 +404,7 @@ func TestAzureDevOpsBuildDefinition_Update_DoesNotSwallowError(t *testing.T) {
 }
 
 func TestExpandVariables_CatchesDuplicateVariables(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	resourceData.Set(bdVariable, []map[string]interface{}{
 		{bdVariableName: "var-name", bdVariableValue: "var-value-1", bdVariableIsSecret: false, bdVariableAllowOverride: false},
 		{bdVariableName: "var-name", bdVariableValue: "var-value-2", bdVariableIsSecret: false, bdVariableAllowOverride: false},
