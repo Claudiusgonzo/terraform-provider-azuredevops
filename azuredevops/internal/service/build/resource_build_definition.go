@@ -25,6 +25,7 @@ const (
 	bdVariableAllowOverride = "allow_override"
 )
 
+// ResourceBuildDefinition schema and implementation for build definition resource
 func ResourceBuildDefinition() *schema.Resource {
 	filterSchema := map[string]*schema.Schema{
 		"include": {

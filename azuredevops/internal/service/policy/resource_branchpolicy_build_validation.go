@@ -27,6 +27,7 @@ type buildValidationPolicySettings struct {
 	ValidDuration           int    `json:"validDuration"`
 }
 
+// ResourceBranchPolicyBuildValidation schema and implementation for build validation policy resource
 func ResourceBranchPolicyBuildValidation() *schema.Resource {
 	resource := genBasePolicyResource(&policyCrudArgs{
 		FlattenFunc: buildValidationFlattenFunc,

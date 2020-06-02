@@ -20,6 +20,7 @@ const (
 	invalidQueueIDErrorMessageFormat = "Queue ID was unexpectedly not a valid integer: %+v"
 )
 
+// ResourceAgentQueue schema and implementation for agent queue resource
 func ResourceAgentQueue() *schema.Resource {
 	// Note: there is no update API, so all fields will require a new resource
 	return &schema.Resource{

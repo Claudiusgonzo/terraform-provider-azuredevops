@@ -23,6 +23,7 @@ import (
 var projectCreateTimeoutDuration time.Duration = 60 * 3
 var projectDeleteTimeoutDuration time.Duration = 60
 
+// ResourceProject schema and implementation for project resource
 func ResourceProject() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceProjectCreate,

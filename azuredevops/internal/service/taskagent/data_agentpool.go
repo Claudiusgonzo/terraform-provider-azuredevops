@@ -9,6 +9,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
 )
 
+// DataAgentPool schema and implementation for agent pool data source
 func DataAgentPool() *schema.Resource {
 	baseSchema := ResourceAgentPool()
 	for k, v := range baseSchema.Schema {

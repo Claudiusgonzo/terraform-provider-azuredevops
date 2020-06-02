@@ -17,6 +17,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
+// DataProjects schema and implementation for projects data source
 func DataProjects() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceProjectsRead,

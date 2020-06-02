@@ -29,6 +29,7 @@ var (
 	}
 )
 
+// ResourceUserEntitlement schema and implementation for user entitlement resource
 func ResourceUserEntitlement() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceUserEntitlementCreate,

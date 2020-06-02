@@ -12,6 +12,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 )
 
+// DataGroup schema and implementation for group data source
 func DataGroup() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceGroupRead,

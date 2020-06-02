@@ -20,6 +20,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 )
 
+// ResourceGroup schema and implementation for group resource
 func ResourceGroup() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGroupCreate,

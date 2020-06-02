@@ -16,6 +16,7 @@ const msgErrorFailedResourceCreate = "error creating authorized resource: %+v"
 const msgErrorFailedResourceUpdate = "error updating authorized resource: %+v"
 const msgErrorFailedResourceDelete = "error deleting authorized resource: %+v"
 
+// ResourceResourceAuthorization schema and implementation for resource authorization resource
 func ResourceResourceAuthorization() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceResourceAuthorizationCreate,

@@ -8,6 +8,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
+// ResourceServiceEndpointBitBucket schema and implementation for bitbucket service endpoint resource
 func ResourceServiceEndpointBitBucket() *schema.Resource {
 	r := genBaseServiceEndpointResource(flattenServiceEndpointBitBucket, expandServiceEndpointBitBucket)
 	makeUnprotectedSchema(r, "username", "AZDO_BITBUCKET_SERVICE_CONNECTION_USERNAME", "The bitbucket username which should be used.")

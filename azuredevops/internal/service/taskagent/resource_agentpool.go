@@ -14,6 +14,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
+// ResourceAgentPool schema and implementation for agent pool resource
 func ResourceAgentPool() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceAzureAgentPoolCreate,

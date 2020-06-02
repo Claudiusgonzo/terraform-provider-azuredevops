@@ -17,6 +17,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
+// DataGitRepositories schema and implementation for git repo data source
 func DataGitRepositories() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceGitRepositoriesRead,

@@ -38,6 +38,7 @@ const (
 	expandingVariableGroupErrorMessageFormat  = "Error expanding variable group resource data: %+v"
 )
 
+// ResourceVariableGroup schema and implementation for variable group resource
 func ResourceVariableGroup() *schema.Resource {
 	return &schema.Resource{
 		Create:   resourceVariableGroupCreate,

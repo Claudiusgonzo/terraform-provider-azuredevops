@@ -16,6 +16,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 )
 
+// ResourceGroupMembership schema and implementation for group membership resource
 func ResourceGroupMembership() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGroupMembershipCreate,

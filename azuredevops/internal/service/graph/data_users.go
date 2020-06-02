@@ -14,6 +14,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
 
+// DataUsers schema and implementation for users data source
 func DataUsers() *schema.Resource {
 	return &schema.Resource{
 		Read: dataUsersRead,

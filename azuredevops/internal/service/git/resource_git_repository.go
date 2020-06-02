@@ -37,6 +37,7 @@ var RepoInitTypeValues = repoInitTypeValuesType{
 	Import:        "Import",
 }
 
+// ResourceGitRepository schema and implementation for git repo resource
 func ResourceGitRepository() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGitRepositoryCreate,

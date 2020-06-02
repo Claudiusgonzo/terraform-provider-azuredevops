@@ -8,6 +8,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
 )
 
+// DataProject schema and implementation for project data source
 func DataProject() *schema.Resource {
 	baseSchema := ResourceProject()
 	for k, v := range baseSchema.Schema {

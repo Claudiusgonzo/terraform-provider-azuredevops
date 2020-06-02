@@ -10,6 +10,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
+// ResourceServiceEndpointAzureRM schema and implementation for AzureRM service endpoint resource
 func ResourceServiceEndpointAzureRM() *schema.Resource {
 	r := genBaseServiceEndpointResource(flattenServiceEndpointAzureRM, expandServiceEndpointAzureRM)
 	makeUnprotectedSchema(r, "azurerm_spn_tenantid", "ARM_TENANT_ID", "The service principal tenant id which should be used.")

@@ -11,7 +11,7 @@ const (
 	organizationURL = "organization_url"
 )
 
-// DataClientConfig resource for obtaining information about the client used for AzDO
+// DataClientConfig schema and implementation for AzDO client configuration
 func DataClientConfig() *schema.Resource {
 	return &schema.Resource{
 		Read: clientConfigRead,

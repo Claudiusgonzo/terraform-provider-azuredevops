@@ -8,6 +8,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
+// ResourceServiceEndpointDockerRegistry schema and implementation for docker registry service endpoint resource
 func ResourceServiceEndpointDockerRegistry() *schema.Resource {
 	r := genBaseServiceEndpointResource(flattenServiceEndpointDockerRegistry, expandServiceEndpointDockerRegistry)
 	r.Schema["docker_registry"] = &schema.Schema{

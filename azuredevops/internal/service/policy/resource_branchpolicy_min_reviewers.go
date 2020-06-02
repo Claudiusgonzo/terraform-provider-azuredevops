@@ -21,6 +21,7 @@ type minReviewerPolicySettings struct {
 	SubmitterCanVote bool `json:"creatorVoteCounts"`
 }
 
+// ResourceBranchPolicyMinReviewers schema and implementation for min reviewer policy resource
 func ResourceBranchPolicyMinReviewers() *schema.Resource {
 	resource := genBasePolicyResource(&policyCrudArgs{
 		FlattenFunc: minReviewersFlattenFunc,
