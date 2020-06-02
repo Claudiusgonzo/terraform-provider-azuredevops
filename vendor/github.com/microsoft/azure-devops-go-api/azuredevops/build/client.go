@@ -981,10 +981,10 @@ func (client *ClientImpl) GetBuildBadge(ctx context.Context, args GetBuildBadgeA
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.model.RepoType == nil || *args.model.RepoType == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.model.RepoType"}
+	if args.RepoType == nil || *args.RepoType == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepoType"}
 	}
-	routeValues["repoType"] = *args.model.RepoType
+	routeValues["repoType"] = *args.RepoType
 
 	queryParams := url.Values{}
 	if args.RepoId != nil {
@@ -1009,7 +1009,7 @@ type GetBuildBadgeArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) The repository type.
-	model.RepoType *string
+	RepoType *string
 	// (optional) The repository ID.
 	RepoId *string
 	// (optional) The branch name.
@@ -1023,10 +1023,10 @@ func (client *ClientImpl) GetBuildBadgeData(ctx context.Context, args GetBuildBa
 		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.Project"}
 	}
 	routeValues["project"] = *args.Project
-	if args.model.RepoType == nil || *args.model.RepoType == "" {
-		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.model.RepoType"}
+	if args.RepoType == nil || *args.RepoType == "" {
+		return nil, &azuredevops.ArgumentNilOrEmptyError{ArgumentName: "args.RepoType"}
 	}
-	routeValues["repoType"] = *args.model.RepoType
+	routeValues["repoType"] = *args.RepoType
 
 	queryParams := url.Values{}
 	if args.RepoId != nil {
@@ -1051,7 +1051,7 @@ type GetBuildBadgeDataArgs struct {
 	// (required) Project ID or project name
 	Project *string
 	// (required) The repository type.
-	model.RepoType *string
+	RepoType *string
 	// (optional) The repository ID.
 	RepoId *string
 	// (optional) The branch name.
