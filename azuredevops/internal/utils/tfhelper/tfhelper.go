@@ -204,11 +204,6 @@ func ImportProjectQualifiedResourceUUID() *schema.ResourceImporter {
 				return nil, fmt.Errorf("error parsing the resource ID from the Terraform resource data: %v", err)
 			}
 
-			_, err = strconv.Atoi(resourceID)
-			if err != nil {
-				return nil, fmt.Errorf("resource ID was expected to be integer, but was not: %+v", err)
-			}
-
 			d.Set("project_id", projectNameOrID)
 			d.SetId(resourceID)
 			return []*schema.ResourceData{d}, nil
