@@ -3,6 +3,8 @@ package azuredevops
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/serviceendpoint"
 )
 
 // Provider - The top level Azure DevOps Provider definition.
@@ -15,11 +17,11 @@ func Provider() *schema.Provider {
 			"azuredevops_build_definition":               resourceBuildDefinition(),
 			"azuredevops_project":                        resourceProject(),
 			"azuredevops_variable_group":                 resourceVariableGroup(),
-			"azuredevops_serviceendpoint_azurerm":        resourceServiceEndpointAzureRM(),
-			"azuredevops_serviceendpoint_bitbucket":      resourceServiceEndpointBitBucket(),
-			"azuredevops_serviceendpoint_dockerregistry": resourceServiceEndpointDockerRegistry(),
-			"azuredevops_serviceendpoint_github":         resourceServiceEndpointGitHub(),
-			"azuredevops_serviceendpoint_kubernetes":     resourceServiceEndpointKubernetes(),
+			"azuredevops_serviceendpoint_azurerm":        serviceendpoint.ResourceServiceEndpointAzureRM(),
+			"azuredevops_serviceendpoint_bitbucket":      serviceendpoint.ResourceServiceEndpointBitBucket(),
+			"azuredevops_serviceendpoint_dockerregistry": serviceendpoint.ResourceServiceEndpointDockerRegistry(),
+			"azuredevops_serviceendpoint_github":         serviceendpoint.ResourceServiceEndpointGitHub(),
+			"azuredevops_serviceendpoint_kubernetes":     serviceendpoint.ResourceServiceEndpointKubernetes(),
 			"azuredevops_git_repository":                 resourceGitRepository(),
 			"azuredevops_user_entitlement":               resourceUserEntitlement(),
 			"azuredevops_group_membership":               resourceGroupMembership(),
@@ -30,7 +32,7 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"azuredevops_agent_pool":       dataAzureAgentPool(),
 			"azuredevops_agent_pools":      dataAzureAgentPools(),
-			"azuredevops_client_config":    dataClientConfig(),
+			"azuredevops_client_config":    service.DataClientConfig(),
 			"azuredevops_group":            dataGroup(),
 			"azuredevops_project":          dataProject(),
 			"azuredevops_projects":         dataProjects(),

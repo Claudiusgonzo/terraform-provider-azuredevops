@@ -1,11 +1,10 @@
-package azuredevops
+package serviceendpoint
 
 import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	crud "github.com/microsoft/terraform-provider-azuredevops/azuredevops/crud/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -15,8 +14,8 @@ const (
 	personalAccessToken = "personal_access_token"
 )
 
-func resourceServiceEndpointGitHub() *schema.Resource {
-	r := crud.GenBaseServiceEndpointResource(flattenServiceEndpointGitHub, expandServiceEndpointGitHub, parseImportedProjectIDAndServiceEndpointID)
+func ResourceServiceEndpointGitHub() *schema.Resource {
+	r := genBaseServiceEndpointResource(flattenServiceEndpointGitHub, expandServiceEndpointGitHub, parseImportedProjectIDAndServiceEndpointID)
 	authPersonal := &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			personalAccessToken: {
@@ -108,7 +107,7 @@ func expandAuthPersonalSet(d *schema.Set) map[string]string {
 
 // Convert internal Terraform data structure to an AzDO data structure
 func expandServiceEndpointGitHub(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error) {
-	serviceEndpoint, projectID := crud.DoBaseExpansion(d)
+	serviceEndpoint, projectID := doBaseExpansion(d)
 	scheme := "InstallationToken"
 
 	parameters := &map[string]string{}
@@ -137,7 +136,7 @@ func expandServiceEndpointGitHub(d *schema.ResourceData) (*serviceendpoint.Servi
 
 // Convert AzDO data structure to internal Terraform data structure
 func flattenServiceEndpointGitHub(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string) {
-	crud.DoBaseFlattening(d, serviceEndpoint, projectID)
+	doBaseFlattening(d, serviceEndpoint, projectID)
 	if strings.EqualFold(*serviceEndpoint.Authorization.Scheme, "OAuth") {
 		d.Set("auth_oauth", &[]map[string]interface{}{
 			{

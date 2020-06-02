@@ -1,4 +1,4 @@
-package crudserviceendpoint
+package serviceendpoint
 
 import (
 	"errors"
@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -21,9 +21,9 @@ type flatFunc func(d *schema.ResourceData, serviceEndpoint *serviceendpoint.Serv
 type expandFunc func(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error)
 type importFunc func(clients *client.AggregatedClient, id string) (string, string, error)
 
-//GenBaseServiceEndpointResource creates a Resource with the common parts
+// genBaseServiceEndpointResource creates a Resource with the common parts
 // that all Service Endpoints require.
-func GenBaseServiceEndpointResource(f flatFunc, e expandFunc, i importFunc) *schema.Resource {
+func genBaseServiceEndpointResource(f flatFunc, e expandFunc, i importFunc) *schema.Resource {
 	return &schema.Resource{
 		Create: genServiceEndpointCreateFunc(f, e),
 		Read:   genServiceEndpointReadFunc(f),
@@ -74,8 +74,8 @@ func genBaseSchema() map[string]*schema.Schema {
 	}
 }
 
-// DoBaseExpansion performs the expansion for the 'base' attributes that are defined in the schema, above
-func DoBaseExpansion(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string) {
+// doBaseExpansion performs the expansion for the 'base' attributes that are defined in the schema, above
+func doBaseExpansion(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string) {
 	// an "error" is OK here as it is expected in the case that the ID is not set in the resource data
 	var serviceEndpointID *uuid.UUID
 	parsedID, err := uuid.Parse(d.Id())
@@ -93,8 +93,8 @@ func DoBaseExpansion(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, 
 	return serviceEndpoint, projectID
 }
 
-// DoBaseFlattening performs the flattening for the 'base' attributes that are defined in the schema, above
-func DoBaseFlattening(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string) {
+// doBaseFlattening performs the flattening for the 'base' attributes that are defined in the schema, above
+func doBaseFlattening(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string) {
 	d.SetId(serviceEndpoint.Id.String())
 	d.Set("service_endpoint_name", *serviceEndpoint.Name)
 	d.Set("project_id", projectID)
@@ -104,8 +104,8 @@ func DoBaseFlattening(d *schema.ResourceData, serviceEndpoint *serviceendpoint.S
 	})
 }
 
-// GetScheme allows you to get the nested scheme value
-func GetScheme(d *schema.ResourceData) (string, error) {
+// getScheme allows you to get the nested scheme value
+func getScheme(d *schema.ResourceData) (string, error) {
 	authorization := d.Get("authorization").(*schema.Set)
 	if authorization == nil {
 		return "", errors.New("authorization not set")
@@ -118,8 +118,8 @@ func GetScheme(d *schema.ResourceData) (string, error) {
 	return scheme, nil
 }
 
-// MakeProtectedSchema create protected schema
-func MakeProtectedSchema(r *schema.Resource, keyName, envVarName, description string) {
+// makeProtectedSchema create protected schema
+func makeProtectedSchema(r *schema.Resource, keyName, envVarName, description string) {
 	r.Schema[keyName] = &schema.Schema{
 		Type:             schema.TypeString,
 		Required:         true,
@@ -133,8 +133,8 @@ func MakeProtectedSchema(r *schema.Resource, keyName, envVarName, description st
 	r.Schema[secretHashKey] = secretHashSchema
 }
 
-// MakeUnprotectedSchema create unprotected schema
-func MakeUnprotectedSchema(r *schema.Resource, keyName, envVarName, description string) {
+// makeUnprotectedSchema create unprotected schema
+func makeUnprotectedSchema(r *schema.Resource, keyName, envVarName, description string) {
 	r.Schema[keyName] = &schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,

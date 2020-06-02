@@ -1,4 +1,4 @@
-package azuredevops
+package serviceendpoint
 
 import (
 	"fmt"
@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	crud "github.com/microsoft/terraform-provider-azuredevops/azuredevops/crud/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -97,7 +96,7 @@ func makeSchemaKubeconfig(r *schema.Resource) {
 			},
 		},
 	}
-	crud.MakeProtectedSchema(resourceElemSchema, "kube_config", "AZDO_KUBERNETES_SERVICE_CONNECTION_KUBECONFIG", "Content of the kubeconfig file. The configuration information in your kubeconfig file allows Kubernetes clients to talk to your Kubernetes API servers. This file is used by kubectl and all supported Kubernetes clients.")
+	makeProtectedSchema(resourceElemSchema, "kube_config", "AZDO_KUBERNETES_SERVICE_CONNECTION_KUBECONFIG", "Content of the kubeconfig file. The configuration information in your kubeconfig file allows Kubernetes clients to talk to your Kubernetes API servers. This file is used by kubectl and all supported Kubernetes clients.")
 	r.Schema[resourceBlockKubeconfig] = &schema.Schema{
 		Type:        schema.TypeSet,
 		Optional:    true,
@@ -131,8 +130,8 @@ func makeSchemaServiceAccount(r *schema.Resource) {
 			},
 		},
 	}
-	crud.MakeProtectedSchema(resourceElemSchema, "ca_cert", "AZDO_KUBERNETES_SERVICE_CONNECTION_SERVICE_ACCOUNT_CERT", "Secret cert")
-	crud.MakeProtectedSchema(resourceElemSchema, "token", "AZDO_KUBERNETES_SERVICE_CONNECTION_SERVICE_ACCOUNT_TOKEN", "Secret token")
+	makeProtectedSchema(resourceElemSchema, "ca_cert", "AZDO_KUBERNETES_SERVICE_CONNECTION_SERVICE_ACCOUNT_CERT", "Secret cert")
+	makeProtectedSchema(resourceElemSchema, "token", "AZDO_KUBERNETES_SERVICE_CONNECTION_SERVICE_ACCOUNT_TOKEN", "Secret token")
 	r.Schema[resourceBlockServiceAccount] = &schema.Schema{
 		Type:        schema.TypeSet,
 		Optional:    true,
@@ -141,8 +140,8 @@ func makeSchemaServiceAccount(r *schema.Resource) {
 	}
 }
 
-func resourceServiceEndpointKubernetes() *schema.Resource {
-	r := crud.GenBaseServiceEndpointResource(flattenServiceEndpointKubernetes, expandServiceEndpointKubernetes, parseImportedProjectIDAndServiceEndpointID)
+func ResourceServiceEndpointKubernetes() *schema.Resource {
+	r := genBaseServiceEndpointResource(flattenServiceEndpointKubernetes, expandServiceEndpointKubernetes, parseImportedProjectIDAndServiceEndpointID)
 	r.Schema[resourceAttrAPIURL] = &schema.Schema{
 		Type:         schema.TypeString,
 		Required:     true,
@@ -164,7 +163,7 @@ func resourceServiceEndpointKubernetes() *schema.Resource {
 
 // Convert internal Terraform data structure to an AzDO data structure
 func expandServiceEndpointKubernetes(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error) {
-	serviceEndpoint, projectID := crud.DoBaseExpansion(d)
+	serviceEndpoint, projectID := doBaseExpansion(d)
 	serviceEndpoint.Type = converter.String("kubernetes")
 	serviceEndpoint.Url = converter.String(d.Get(resourceAttrAPIURL).(string))
 
@@ -239,7 +238,7 @@ func expandServiceEndpointKubernetes(d *schema.ResourceData) (*serviceendpoint.S
 
 // Convert AzDO data structure to internal Terraform data structure
 func flattenServiceEndpointKubernetes(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string) {
-	crud.DoBaseFlattening(d, serviceEndpoint, projectID)
+	doBaseFlattening(d, serviceEndpoint, projectID)
 	d.Set(resourceAttrAuthType, (*serviceEndpoint.Data)[serviceEndpointDataAttrAuthType])
 	d.Set(resourceAttrAPIURL, (*serviceEndpoint.Url))
 

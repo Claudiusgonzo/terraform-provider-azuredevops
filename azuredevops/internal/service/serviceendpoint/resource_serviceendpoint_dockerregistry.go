@@ -1,17 +1,17 @@
-package azuredevops
+package serviceendpoint
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	crud "github.com/microsoft/terraform-provider-azuredevops/azuredevops/crud/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
-func resourceServiceEndpointDockerRegistry() *schema.Resource {
-	r := crud.GenBaseServiceEndpointResource(flattenServiceEndpointDockerRegistry, expandServiceEndpointDockerRegistry, parseImportedProjectIDAndServiceEndpointID)
+func ResourceServiceEndpointDockerRegistry() *schema.Resource {
+	r := genBaseServiceEndpointResource(flattenServiceEndpointDockerRegistry, expandServiceEndpointDockerRegistry, parseImportedProjectIDAndServiceEndpointID)
 	r.Schema["docker_registry"] = &schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,
@@ -55,7 +55,7 @@ func resourceServiceEndpointDockerRegistry() *schema.Resource {
 
 // Convert internal Terraform data structure to an AzDO data structure
 func expandServiceEndpointDockerRegistry(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error) {
-	serviceEndpoint, projectID := crud.DoBaseExpansion(d)
+	serviceEndpoint, projectID := doBaseExpansion(d)
 	serviceEndpoint.Authorization = &serviceendpoint.EndpointAuthorization{
 		Parameters: &map[string]string{
 			"registry": d.Get("docker_registry").(string),
@@ -75,7 +75,7 @@ func expandServiceEndpointDockerRegistry(d *schema.ResourceData) (*serviceendpoi
 
 // Convert AzDO data structure to internal Terraform data structure
 func flattenServiceEndpointDockerRegistry(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string) {
-	crud.DoBaseFlattening(d, serviceEndpoint, projectID)
+	doBaseFlattening(d, serviceEndpoint, projectID)
 	d.Set("docker_registry", (*serviceEndpoint.Authorization.Parameters)["registry"])
 	d.Set("docker_email", (*serviceEndpoint.Authorization.Parameters)["email"])
 	d.Set("docker_username", (*serviceEndpoint.Authorization.Parameters)["username"])
@@ -91,8 +91,11 @@ func parseImportedProjectIDAndServiceEndpointID(clients *client.AggregatedClient
 		return "", "", err
 	}
 
-	// Get the project ID
-	currentProject, err := ProjectRead(clients, project, project)
+	currentProject, err := clients.CoreClient.GetProject(clients.Ctx, core.GetProjectArgs{
+		ProjectId:           &project,
+		IncludeCapabilities: converter.Bool(true),
+		IncludeHistory:      converter.Bool(false),
+	})
 	if err != nil {
 		return "", "", err
 	}

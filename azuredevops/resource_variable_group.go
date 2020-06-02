@@ -9,8 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -535,7 +535,7 @@ func ParseImportedProjectIDAndVariableGroupID(clients *client.AggregatedClient, 
 	}
 
 	// Get the project ID
-	currentProject, err := ProjectRead(clients, project, project)
+	currentProject, err := projectRead(clients, project, project)
 	if err != nil {
 		return "", 0, err
 	}

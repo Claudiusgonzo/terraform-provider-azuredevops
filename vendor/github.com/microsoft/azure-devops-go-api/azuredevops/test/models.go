@@ -203,7 +203,7 @@ type BuildReference2 struct {
 	CreatedDate          *azuredevops.Time `json:"createdDate,omitempty"`
 	ProjectId            *uuid.UUID        `json:"projectId,omitempty"`
 	RepoId               *string           `json:"repoId,omitempty"`
-	RepoType             *string           `json:"repoType,omitempty"`
+	model.RepoType             *string           `json:"repoType,omitempty"`
 	SourceVersion        *string           `json:"sourceVersion,omitempty"`
 }
 

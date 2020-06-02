@@ -1,7 +1,7 @@
 // +build all resource_serviceendpoint_github
 // +build !exclude_serviceendpoints
 
-package azuredevops
+package serviceendpoint
 
 import (
 	"context"
@@ -39,7 +39,7 @@ var ghTestServiceEndpoint = serviceendpoint.ServiceEndpoint{
 
 // verifies that the flatten/expand round trip yields the same service endpoint
 func TestAzureDevOpsServiceEndpointGitHub_ExpandFlatten_Roundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceServiceEndpointGitHub().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointGitHub().Schema, nil)
 	configureAuthPersonal(resourceData)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
@@ -55,7 +55,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Create_DoesNotSwallowError(t *testing.
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointGitHub()
+	r := ResourceServiceEndpointGitHub()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureAuthPersonal(resourceData)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
@@ -79,7 +79,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Read_DoesNotSwallowError(t *testing.T)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointGitHub()
+	r := ResourceServiceEndpointGitHub()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
@@ -102,7 +102,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Delete_DoesNotSwallowError(t *testing.
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointGitHub()
+	r := ResourceServiceEndpointGitHub()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)
 
@@ -125,7 +125,7 @@ func TestAzureDevOpsServiceEndpointGitHub_Update_DoesNotSwallowError(t *testing.
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointGitHub()
+	r := ResourceServiceEndpointGitHub()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureAuthPersonal(resourceData)
 	flattenServiceEndpointGitHub(resourceData, &ghTestServiceEndpoint, ghTestServiceEndpointProjectID)

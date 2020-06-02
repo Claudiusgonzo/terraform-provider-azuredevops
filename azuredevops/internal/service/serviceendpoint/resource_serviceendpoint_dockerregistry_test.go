@@ -1,7 +1,7 @@
 // +build all resource_serviceendpoint_dockerregistry
 // +build !exclude_serviceendpoints
 
-package azuredevops
+package serviceendpoint
 
 import (
 	"context"
@@ -45,7 +45,7 @@ var dockerRegistryTestServiceEndpoint = serviceendpoint.ServiceEndpoint{ //todo 
 
 // verifies that the flatten/expand round trip yields the same service endpoint
 func TestAzureDevOpsServiceEndpointDockerRegistry_ExpandFlatten_Roundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceServiceEndpointDockerRegistry().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointDockerRegistry().Schema, nil)
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
 	serviceEndpointAfterRoundTrip, projectID, err := expandServiceEndpointDockerRegistry(resourceData)
@@ -60,7 +60,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Create_DoesNotSwallowError(t *
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointDockerRegistry()
+	r := ResourceServiceEndpointDockerRegistry()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
@@ -83,7 +83,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Read_DoesNotSwallowError(t *te
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointDockerRegistry()
+	r := ResourceServiceEndpointDockerRegistry()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
@@ -106,7 +106,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Delete_DoesNotSwallowError(t *
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointDockerRegistry()
+	r := ResourceServiceEndpointDockerRegistry()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 
@@ -129,7 +129,7 @@ func TestAzureDevOpsServiceEndpointDockerRegistry_Update_DoesNotSwallowError(t *
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointDockerRegistry()
+	r := ResourceServiceEndpointDockerRegistry()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	flattenServiceEndpointDockerRegistry(resourceData, &dockerRegistryTestServiceEndpoint, dockerRegistryTestServiceEndpointProjectID)
 

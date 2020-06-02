@@ -1,4 +1,4 @@
-package azuredevops
+package serviceendpoint
 
 import (
 	"fmt"
@@ -6,16 +6,15 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/serviceendpoint"
-	crud "github.com/microsoft/terraform-provider-azuredevops/azuredevops/crud/serviceendpoint"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 )
 
-func resourceServiceEndpointAzureRM() *schema.Resource {
-	r := crud.GenBaseServiceEndpointResource(flattenServiceEndpointAzureRM, expandServiceEndpointAzureRM, parseImportedProjectIDAndServiceEndpointID)
-	crud.MakeUnprotectedSchema(r, "azurerm_spn_tenantid", "ARM_TENANT_ID", "The service principal tenant id which should be used.")
-	crud.MakeUnprotectedSchema(r, "azurerm_subscription_id", "ARM_SUBSCRIPTION_ID", "The Azure subscription Id which should be used.")
-	crud.MakeUnprotectedSchema(r, "azurerm_subscription_name", "ARM_SUBSCRIPTION_NAME", "The Azure subscription name which should be used.")
+func ResourceServiceEndpointAzureRM() *schema.Resource {
+	r := genBaseServiceEndpointResource(flattenServiceEndpointAzureRM, expandServiceEndpointAzureRM, parseImportedProjectIDAndServiceEndpointID)
+	makeUnprotectedSchema(r, "azurerm_spn_tenantid", "ARM_TENANT_ID", "The service principal tenant id which should be used.")
+	makeUnprotectedSchema(r, "azurerm_subscription_id", "ARM_SUBSCRIPTION_ID", "The Azure subscription Id which should be used.")
+	makeUnprotectedSchema(r, "azurerm_subscription_name", "ARM_SUBSCRIPTION_NAME", "The Azure subscription name which should be used.")
 
 	r.Schema["resource_group"] = &schema.Schema{
 		Type:          schema.TypeString,
@@ -56,7 +55,7 @@ func resourceServiceEndpointAzureRM() *schema.Resource {
 
 // Convert internal Terraform data structure to an AzDO data structure
 func expandServiceEndpointAzureRM(d *schema.ResourceData) (*serviceendpoint.ServiceEndpoint, *string, error) {
-	serviceEndpoint, projectID := crud.DoBaseExpansion(d)
+	serviceEndpoint, projectID := doBaseExpansion(d)
 
 	scope := fmt.Sprintf("/subscriptions/%s", d.Get("azurerm_subscription_id"))
 	scopeLevel := "Subscription"
@@ -124,7 +123,7 @@ func flattenCredentials(serviceEndpoint *serviceendpoint.ServiceEndpoint, hashKe
 
 // Convert AzDO data structure to internal Terraform data structure
 func flattenServiceEndpointAzureRM(d *schema.ResourceData, serviceEndpoint *serviceendpoint.ServiceEndpoint, projectID *string) {
-	crud.DoBaseFlattening(d, serviceEndpoint, projectID)
+	doBaseFlattening(d, serviceEndpoint, projectID)
 	scope := (*serviceEndpoint.Authorization.Parameters)["scope"]
 
 	if (*serviceEndpoint.Data)["creationMode"] == "Manual" {

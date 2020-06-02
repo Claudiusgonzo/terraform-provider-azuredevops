@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/core"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/operations"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
@@ -148,7 +148,7 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 	id := d.Id()
 	name := d.Get("project_name").(string)
 
-	project, err := ProjectRead(clients, id, name)
+	project, err := projectRead(clients, id, name)
 	if err != nil {
 		if utils.ResponseWasNotFound(err) {
 			d.SetId("")
@@ -164,10 +164,10 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-// ProjectRead Lookup a project using the ID, or name if the ID is not set. Note, usage of the name in place
+// projectRead Lookup a project using the ID, or name if the ID is not set. Note, usage of the name in place
 // of the ID is an explicitly stated supported behavior:
 //		https://docs.microsoft.com/en-us/rest/api/azure/devops/core/projects/get?view=azure-devops-rest-5.0
-func ProjectRead(clients *client.AggregatedClient, projectID string, projectName string) (*core.TeamProject, error) {
+func projectRead(clients *client.AggregatedClient, projectID string, projectName string) (*core.TeamProject, error) {
 	identifier := projectID
 	if identifier == "" {
 		identifier = projectName

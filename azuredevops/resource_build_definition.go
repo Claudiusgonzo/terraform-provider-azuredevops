@@ -9,28 +9,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/model"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/validate"
 )
-
-// RepoType the type of the repository
-type RepoType string
-
-type repoTypeValuesType struct {
-	GitHub    RepoType
-	TfsGit    RepoType
-	Bitbucket RepoType
-}
-
-// RepoTypeValues enum of the type of the repository
-var RepoTypeValues = repoTypeValuesType{
-	GitHub:    "GitHub",
-	TfsGit:    "TfsGit",
-	Bitbucket: "Bitbucket",
-}
 
 const (
 	bdVariable              = "variable"
@@ -165,9 +150,9 @@ func resourceBuildDefinition() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 							ValidateFunc: validation.StringInSlice([]string{
-								string(RepoTypeValues.GitHub),
-								string(RepoTypeValues.TfsGit),
-								string(RepoTypeValues.Bitbucket),
+								string(model.RepoTypeValues.GitHub),
+								string(model.RepoTypeValues.TfsGit),
+								string(model.RepoTypeValues.Bitbucket),
 							}, false),
 						},
 						"branch_name": {
@@ -820,14 +805,14 @@ func expandBuildDefinition(d *schema.ResourceData) (*build.BuildDefinition, stri
 
 	repoID := repository["repo_id"].(string)
 	repoName := ""
-	repoType := RepoType(repository["repo_type"].(string))
+	repoType := model.RepoType(repository["repo_type"].(string))
 	repoURL := ""
 	repoAPIURL := ""
 	if strings.EqualFold(string(repoType), string(RepoTypeValues.GitHub)) {
 		repoURL = fmt.Sprintf("https://github.com/%s.git", repoID)
 		repoName = repoID
 	}
-	if strings.EqualFold(string(repoType), string(RepoTypeValues.Bitbucket)) {
+	if strings.EqualFold(string(repoType), string(model.RepoTypeValues.Bitbucket)) {
 		repoURL = fmt.Sprintf("https://bitbucket.org/%s.git", repoID)
 		repoName = repoID
 
@@ -908,7 +893,7 @@ func validateServiceConnectionIDExistsIfNeeded(d *schema.ResourceData) error {
 	repoType := repository["repo_type"].(string)
 	serviceConnectionID := repository["service_connection_id"].(string)
 
-	if strings.EqualFold(repoType, string(RepoTypeValues.Bitbucket)) && serviceConnectionID == "" {
+	if strings.EqualFold(repoType, string(model.RepoTypeValues.Bitbucket)) && serviceConnectionID == "" {
 		return errors.New("bitbucket repositories need a referenced service connection ID")
 	}
 	return nil

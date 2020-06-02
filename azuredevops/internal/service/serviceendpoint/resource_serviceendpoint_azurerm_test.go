@@ -1,7 +1,7 @@
 // +build all resource_serviceendpoint_azurerm
 // +build !exclude_serviceendpoints
 
-package azuredevops
+package serviceendpoint
 
 import (
 	"context"
@@ -119,7 +119,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Create_DoesNotSwallowError(t *testing
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointAzureRM()
+	r := ResourceServiceEndpointAzureRM()
 	for _, resource := range azurermTestServiceEndpointsAzureRM {
 		resourceData := getResourceData(t, resource)
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
@@ -145,7 +145,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Read_DoesNotSwallowError(t *testing.T
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointAzureRM()
+	r := ResourceServiceEndpointAzureRM()
 	for _, resource := range azurermTestServiceEndpointsAzureRM {
 		resourceData := getResourceData(t, resource)
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
@@ -170,7 +170,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Delete_DoesNotSwallowError(t *testing
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointAzureRM()
+	r := ResourceServiceEndpointAzureRM()
 	for _, resource := range azurermTestServiceEndpointsAzureRM {
 		resourceData := getResourceData(t, resource)
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
@@ -195,7 +195,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_Update_DoesNotSwallowError(t *testing
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointAzureRM()
+	r := ResourceServiceEndpointAzureRM()
 	for _, resource := range azurermTestServiceEndpointsAzureRM {
 		resourceData := getResourceData(t, resource)
 		flattenServiceEndpointAzureRM(resourceData, &resource, azurermTestServiceEndpointAzureRMProjectID)
@@ -256,7 +256,7 @@ func TestAzureDevOpsServiceEndpointAzureRM_ExpandHandlesMissingSpnKeyInAPIRespon
 }
 
 func getResourceData(t *testing.T, resource serviceendpoint.ServiceEndpoint) *schema.ResourceData {
-	resourceData := schema.TestResourceDataRaw(t, resourceServiceEndpointAzureRM().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointAzureRM().Schema, nil)
 	if key := (*resource.Authorization.Parameters)["serviceprincipalkey"]; key != "" {
 		resourceData.Set("credentials", []map[string]interface{}{{"serviceprincipalkey_hash": key}})
 	}

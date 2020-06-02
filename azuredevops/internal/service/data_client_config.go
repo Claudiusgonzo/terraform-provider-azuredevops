@@ -1,4 +1,4 @@
-package azuredevops
+package service
 
 import (
 	"time"
@@ -11,7 +11,8 @@ const (
 	organizationURL = "organization_url"
 )
 
-func dataClientConfig() *schema.Resource {
+// DataClientConfig resource for obtaining information about the client used for AzDO
+func DataClientConfig() *schema.Resource {
 	return &schema.Resource{
 		Read: clientConfigRead,
 		Schema: map[string]*schema.Schema{

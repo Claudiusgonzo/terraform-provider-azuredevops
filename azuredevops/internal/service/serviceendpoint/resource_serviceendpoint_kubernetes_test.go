@@ -1,7 +1,7 @@
 // +build all resource_serviceendpoint_kubernetes
 // +build !exclude_serviceendpoints
 
-package azuredevops
+package serviceendpoint
 
 import (
 	"context"
@@ -109,7 +109,7 @@ func createkubernetesTestServiceEndpointForServiceAccount() *serviceendpoint.Ser
 
 // verifies that the flatten/expand round trip yields the same service endpoint for autorization type "AzureSubscription"
 func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionExpandFlattenRoundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceServiceEndpointKubernetes().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointKubernetes().Schema, nil)
 	kubernetesTestServiceEndpointForAzureSubscription := createkubernetesTestServiceEndpointForAzureSubscription()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
 
@@ -125,7 +125,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionCreateDoesNotSw
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	kubernetesTestServiceEndpointForAzureSubscription := createkubernetesTestServiceEndpointForAzureSubscription()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
@@ -149,7 +149,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionReadDoesNotSwal
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	kubernetesTestServiceEndpointForAzureSubscription := createkubernetesTestServiceEndpointForAzureSubscription()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
@@ -173,7 +173,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionDeleteDoesNotSw
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	kubernetesTestServiceEndpointForAzureSubscription := createkubernetesTestServiceEndpointForAzureSubscription()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
@@ -197,7 +197,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionUpdateDoesNotSw
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	kubernetesTestServiceEndpointForAzureSubscription := createkubernetesTestServiceEndpointForAzureSubscription()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForAzureSubscription, kubernetesTestServiceEndpointProjectID)
@@ -223,7 +223,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForAzureSubscriptionUpdateDoesNotSw
 
 // verifies that the flatten/expand round trip yields the same service endpoint for autorization type "Kubeconfig"
 func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigExpandFlattenRoundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceServiceEndpointKubernetes().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointKubernetes().Schema, nil)
 	configureKubeconfig(resourceData)
 	kubernetesTestServiceEndpointForKubeconfig := createkubernetesTestServiceEndpointForKubeconfig()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForKubeconfig, kubernetesTestServiceEndpointProjectID)
@@ -239,7 +239,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigCreateDoesNotSwallowEr
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureKubeconfig(resourceData)
 	kubernetesTestServiceEndpointForKubeconfig := createkubernetesTestServiceEndpointForKubeconfig()
@@ -264,7 +264,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigReadDoesNotSwallowErro
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureKubeconfig(resourceData)
 	kubernetesTestServiceEndpointForKubeconfig := createkubernetesTestServiceEndpointForKubeconfig()
@@ -289,7 +289,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigDeleteDoesNotSwallowEr
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureKubeconfig(resourceData)
 	kubernetesTestServiceEndpointForKubeconfig := createkubernetesTestServiceEndpointForKubeconfig()
@@ -314,7 +314,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigUpdateDoesNotSwallowEr
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureKubeconfig(resourceData)
 	kubernetesTestServiceEndpointForKubeconfig := createkubernetesTestServiceEndpointForKubeconfig()
@@ -341,7 +341,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForKubeconfigUpdateDoesNotSwallowEr
 
 // verifies that the flatten/expand round trip yields the same service endpoint for autorization type "ServiceAccount"
 func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountExpandFlattenRoundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceServiceEndpointKubernetes().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceServiceEndpointKubernetes().Schema, nil)
 	configureServiceAccount(resourceData)
 	kubernetesTestServiceEndpointForServiceAccount := createkubernetesTestServiceEndpointForServiceAccount()
 	flattenServiceEndpointKubernetes(resourceData, kubernetesTestServiceEndpointForServiceAccount, kubernetesTestServiceEndpointProjectID)
@@ -358,7 +358,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountCreateDoesNotSwall
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureServiceAccount(resourceData)
 	kubernetesTestServiceEndpointForServiceAccount := createkubernetesTestServiceEndpointForServiceAccount()
@@ -383,7 +383,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountReadDoesNotSwallow
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureServiceAccount(resourceData)
 	kubernetesTestServiceEndpointForServiceAccount := createkubernetesTestServiceEndpointForServiceAccount()
@@ -408,7 +408,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountDeleteDoesNotSwall
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureServiceAccount(resourceData)
 	kubernetesTestServiceEndpointForServiceAccount := createkubernetesTestServiceEndpointForServiceAccount()
@@ -433,7 +433,7 @@ func TestAzureDevOpsServiceEndpointKubernetesForServiceAccountUpdateDoesNotSwall
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	r := resourceServiceEndpointKubernetes()
+	r := ResourceServiceEndpointKubernetes()
 	resourceData := schema.TestResourceDataRaw(t, r.Schema, nil)
 	configureServiceAccount(resourceData)
 	kubernetesTestServiceEndpointForServiceAccount := createkubernetesTestServiceEndpointForServiceAccount()

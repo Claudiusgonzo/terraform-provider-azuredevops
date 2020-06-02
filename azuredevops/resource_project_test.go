@@ -232,7 +232,7 @@ func TestAzureDevOpsProject_ProjectRead_UsesIdIfSet(t *testing.T) {
 		}).
 		Times(1)
 
-	_, _ = ProjectRead(clients, id, name)
+	_, _ = projectRead(clients, id, name)
 }
 
 // verifies that the project name is used for reads if the ID is not set
@@ -258,7 +258,7 @@ func TestAzureDevOpsProject_ProjectRead_UsesNameIfIdNotSet(t *testing.T) {
 		}).
 		Times(1)
 
-	_, _ = ProjectRead(clients, id, name)
+	_, _ = projectRead(clients, id, name)
 }
 
 // creates an operation given a status
