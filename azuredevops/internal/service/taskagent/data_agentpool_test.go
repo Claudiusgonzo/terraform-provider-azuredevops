@@ -1,6 +1,6 @@
 // +build all core data_projects
 
-package azuredevops
+package taskagent
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -37,7 +37,7 @@ func TestDataSourceAgentPool_Read_TestAgentPoolNotFound(t *testing.T) {
 		Return(&agentPoolListEmpty, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataAzureAgentPool().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataAgentPool().Schema, nil)
 	resourceData.Set("name", &name)
 	err := dataSourceAgentPoolRead(resourceData, clients)
 	require.Contains(t, err.Error(), "Unable to find agent pool")
@@ -63,7 +63,7 @@ func TestDataSourceAgentPool_Read_TestMultipleAgentPoolsFound(t *testing.T) {
 		Return(&agentPoolListEmpty, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataAzureAgentPool().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataAgentPool().Schema, nil)
 	resourceData.Set("name", &name)
 	err := dataSourceAgentPoolRead(resourceData, clients)
 	require.Contains(t, err.Error(), "Found multiple agent pools for name")

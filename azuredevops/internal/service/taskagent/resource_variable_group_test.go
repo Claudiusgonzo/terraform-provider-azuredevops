@@ -1,7 +1,7 @@
 // +build all resource_variable_group
 // +build !exclude_resource_variable_group
 
-package azuredevops
+package taskagent
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -30,7 +30,7 @@ func TestVariableGroupAllowAccess_ExpandFlatten_Roundtrip(t *testing.T) {
 		Name:       testVariableGroup.Name,
 		Id:         converter.String("100"),
 	}
-	resourceData := schema.TestResourceDataRaw(t, resourceVariableGroup().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceVariableGroup().Schema, nil)
 
 	testArrayDefinitionResourceReference := []build.DefinitionResourceReference{testDefinitionResource}
 	flattenAllowAccess(resourceData, &testArrayDefinitionResourceReference)
@@ -52,7 +52,7 @@ func TestVariableGroup_ExpandFlatten_Roundtrip(t *testing.T) {
 			},
 		},
 	}
-	resourceData := schema.TestResourceDataRaw(t, resourceVariableGroup().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceVariableGroup().Schema, nil)
 	testVarGroupProjectID := uuid.New().String()
 
 	err := flattenVariableGroup(resourceData, &testVariableGroup, &testVarGroupProjectID)
@@ -84,7 +84,7 @@ func TestVariableGroupKeyVault_ExpandFlatten_Roundtrip(t *testing.T) {
 		},
 		Type: converter.String(azureKeyVaultType),
 	}
-	resourceData := schema.TestResourceDataRaw(t, resourceVariableGroup().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceVariableGroup().Schema, nil)
 	testVarGroupProjectID := uuid.New().String()
 
 	err := flattenVariableGroup(resourceData, &testVariableGroupKeyvault, &testVarGroupProjectID)

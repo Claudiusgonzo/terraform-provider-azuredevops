@@ -1,4 +1,4 @@
-package azuredevops
+package taskagent
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/converter"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/suppress"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/utils/tfhelper"
@@ -20,7 +20,7 @@ const (
 	invalidQueueIDErrorMessageFormat = "Queue ID was unexpectedly not a valid integer: %+v"
 )
 
-func resourceAgentQueue() *schema.Resource {
+func ResourceAgentQueue() *schema.Resource {
 	// Note: there is no update API, so all fields will require a new resource
 	return &schema.Resource{
 		Create:   resourceAgentQueueCreate,

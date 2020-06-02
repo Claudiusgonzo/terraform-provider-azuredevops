@@ -1,7 +1,7 @@
 // +build all data_sources data_agent_pools
 // +build !exclude_data_sources !exclude_data_agent_pools
 
-package azuredevops
+package taskagent
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -37,7 +37,7 @@ func TestDataSourceAgentPools_Read_TestEmptyAgentPoolList(t *testing.T) {
 		Return(&agentPoolListEmpty, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataAzureAgentPools().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataAgentPools().Schema, nil)
 	err := dataSourceAgentPoolsRead(resourceData, clients)
 	require.Nil(t, err)
 	agentPools := resourceData.Get("agent_pools").([]interface{})
@@ -81,7 +81,7 @@ func TestDataSourceAgentPools_Read_TestFindAllAgentPools(t *testing.T) {
 		Return(&dataTestAgentPools, nil).
 		Times(1)
 
-	resourceData := schema.TestResourceDataRaw(t, dataAzureAgentPools().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, DataAgentPools().Schema, nil)
 	err := dataSourceAgentPoolsRead(resourceData, clients)
 	require.Nil(t, err)
 	agentPools := resourceData.Get("agent_pools").([]interface{})

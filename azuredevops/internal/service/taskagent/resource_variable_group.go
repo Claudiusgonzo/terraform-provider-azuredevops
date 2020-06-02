@@ -1,4 +1,4 @@
-package azuredevops
+package taskagent
 
 import (
 	"encoding/json"
@@ -38,7 +38,7 @@ const (
 	expandingVariableGroupErrorMessageFormat  = "Error expanding variable group resource data: %+v"
 )
 
-func resourceVariableGroup() *schema.Resource {
+func ResourceVariableGroup() *schema.Resource {
 	return &schema.Resource{
 		Create:   resourceVariableGroupCreate,
 		Read:     resourceVariableGroupRead,
@@ -525,20 +525,4 @@ func flattenAllowAccess(d *schema.ResourceData, definitionResource *[]build.Defi
 		allowAccess = false
 	}
 	d.Set(vgAllowAccess, allowAccess)
-}
-
-// ParseImportedProjectIDAndVariableGroupID : Parse the Id (projectId/variableGroupId) or (projectName/variableGroupId)
-func ParseImportedProjectIDAndVariableGroupID(clients *client.AggregatedClient, id string) (string, int, error) {
-	project, resourceID, err := tfhelper.ParseImportedID(id)
-	if err != nil {
-		return "", 0, err
-	}
-
-	// Get the project ID
-	currentProject, err := projectRead(clients, project, project)
-	if err != nil {
-		return "", 0, err
-	}
-
-	return currentProject.Id.String(), resourceID, nil
 }

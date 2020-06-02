@@ -1,6 +1,6 @@
 // +build all resource_agent_queue
 
-package azuredevops
+package taskagent
 
 import (
 	"context"
@@ -119,7 +119,7 @@ func TestAgentQueue_DoesNotSwallowDeleteErrors(t *testing.T) {
 }
 
 func generateResourceData(t *testing.T, project *string, poolID *int, resourceID *int) *schema.ResourceData {
-	resourceData := schema.TestResourceDataRaw(t, resourceAgentQueue().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceAgentQueue().Schema, nil)
 	if project != nil {
 		resourceData.Set(projectID, *project)
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/policy"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/serviceendpoint"
+	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/service/taskagent"
 )
 
 // Provider - The top level Azure DevOps Provider definition.
@@ -17,7 +18,7 @@ func Provider() *schema.Provider {
 			"azuredevops_branch_policy_min_reviewers":    policy.ResourceBranchPolicyMinReviewers(),
 			"azuredevops_build_definition":               resourceBuildDefinition(),
 			"azuredevops_project":                        resourceProject(),
-			"azuredevops_variable_group":                 resourceVariableGroup(),
+			"azuredevops_variable_group":                 taskagent.ResourceVariableGroup(),
 			"azuredevops_serviceendpoint_azurerm":        serviceendpoint.ResourceServiceEndpointAzureRM(),
 			"azuredevops_serviceendpoint_bitbucket":      serviceendpoint.ResourceServiceEndpointBitBucket(),
 			"azuredevops_serviceendpoint_dockerregistry": serviceendpoint.ResourceServiceEndpointDockerRegistry(),
@@ -26,13 +27,13 @@ func Provider() *schema.Provider {
 			"azuredevops_git_repository":                 resourceGitRepository(),
 			"azuredevops_user_entitlement":               resourceUserEntitlement(),
 			"azuredevops_group_membership":               resourceGroupMembership(),
-			"azuredevops_agent_pool":                     resourceAzureAgentPool(),
-			"azuredevops_agent_queue":                    resourceAgentQueue(),
+			"azuredevops_agent_pool":                     taskagent.ResourceAgentPool(),
+			"azuredevops_agent_queue":                    taskagent.ResourceAgentQueue(),
 			"azuredevops_group":                          resourceGroup(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"azuredevops_agent_pool":       dataAzureAgentPool(),
-			"azuredevops_agent_pools":      dataAzureAgentPools(),
+			"azuredevops_agent_pool":       taskagent.DataAgentPool(),
+			"azuredevops_agent_pools":      taskagent.DataAgentPools(),
 			"azuredevops_client_config":    service.DataClientConfig(),
 			"azuredevops_group":            dataGroup(),
 			"azuredevops_project":          dataProject(),

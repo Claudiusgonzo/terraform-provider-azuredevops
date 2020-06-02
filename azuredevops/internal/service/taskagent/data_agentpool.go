@@ -1,4 +1,4 @@
-package azuredevops
+package taskagent
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
 )
 
-func dataAzureAgentPool() *schema.Resource {
-	baseSchema := resourceAzureAgentPool()
+func DataAgentPool() *schema.Resource {
+	baseSchema := ResourceAgentPool()
 	for k, v := range baseSchema.Schema {
 		if k != "name" {
 			baseSchema.Schema[k] = &schema.Schema{

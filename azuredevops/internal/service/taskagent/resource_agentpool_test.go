@@ -1,7 +1,7 @@
 // +build all resource_agentpool
 // +build !exclude_resource_agentpool
 
-package azuredevops
+package taskagent
 
 // The tests in this file use the mock clients in mock_client.go to mock out
 // the Azure DevOps client operations.
@@ -33,7 +33,7 @@ var testAgentPool = taskagent.TaskAgentPool{
 
 // verifies that the flatten/expand round trip yields the same agent pool definition
 func TestAzureDevOpsAgentPool_ExpandFlatten_Roundtrip(t *testing.T) {
-	resourceData := schema.TestResourceDataRaw(t, resourceAzureAgentPool().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &testAgentPool)
 
 	agentPoolAfterRoundTrip, err := expandAgentPool(resourceData, true)
@@ -70,7 +70,7 @@ func TestAzureDevOpsAgentPool_CreateAgentPool_DoesNotSwallowErrorFromFailedAddAg
 func TestAzureDevOpsAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
 	client := &client.AggregatedClient{}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceAzureAgentPool().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &testAgentPool)
 	resourceData.SetId("")
 
@@ -81,7 +81,7 @@ func TestAzureDevOpsAgentPool_DeleteAgentPool_ReturnsErrorIfIdReadFails(t *testi
 func TestAzureDevOpsAgentPool_UpdateAgentPool_ReturnsErrorIfIdReadFails(t *testing.T) {
 	client := &client.AggregatedClient{}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceAzureAgentPool().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &testAgentPool)
 	resourceData.SetId("")
 
@@ -106,7 +106,7 @@ func TestAzureDevOpsAgentPool_UpdateAgentPool_UpdateAndRead(t *testing.T) {
 		AutoProvision: converter.Bool(true),
 	}
 
-	resourceData := schema.TestResourceDataRaw(t, resourceAzureAgentPool().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceAgentPool().Schema, nil)
 	flattenAzureAgentPool(resourceData, &agentToUpdate)
 
 	taskAgentClient.
@@ -146,7 +146,7 @@ func TestAzureDevOpsAgentPoolDefinition_PoolTypeIsCorrect(t *testing.T) {
 		string(taskagent.TaskAgentPoolTypeValues.Automation),
 		string(taskagent.TaskAgentPoolTypeValues.Deployment),
 	}
-	poolTypeSchema := resourceAzureAgentPool().Schema["pool_type"]
+	poolTypeSchema := ResourceAgentPool().Schema["pool_type"]
 
 	for _, repoType := range validPoolTypes {
 		_, errors := poolTypeSchema.ValidateFunc(repoType, "")
@@ -157,7 +157,7 @@ func TestAzureDevOpsAgentPoolDefinition_PoolTypeIsCorrect(t *testing.T) {
 // validates invalid pool types are rejected by the schema
 func TestAzureDevOpsAgentPoolDefinition_WhenPoolTypeIsNotCorrect_ReturnsError(t *testing.T) {
 	invalidPoolTypes := []string{"", "unknown"}
-	poolTypeSchema := resourceAzureAgentPool().Schema["pool_type"]
+	poolTypeSchema := ResourceAgentPool().Schema["pool_type"]
 
 	for _, poolType := range invalidPoolTypes {
 		_, errors := poolTypeSchema.ValidateFunc(poolType, "pool_type")

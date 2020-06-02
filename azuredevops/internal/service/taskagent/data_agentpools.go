@@ -1,4 +1,4 @@
-package azuredevops
+package taskagent
 
 import (
 	"fmt"
@@ -10,8 +10,8 @@ import (
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
 )
 
-func dataAzureAgentPools() *schema.Resource {
-	baseSchema := resourceAzureAgentPool()
+func DataAgentPools() *schema.Resource {
+	baseSchema := ResourceAgentPool()
 
 	// Now that the base schema's ID is not being used as the resource's ID, we can correctly
 	// set it to be an integer.
