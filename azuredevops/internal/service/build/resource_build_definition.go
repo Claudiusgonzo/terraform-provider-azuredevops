@@ -809,7 +809,7 @@ func expandBuildDefinition(d *schema.ResourceData) (*build.BuildDefinition, stri
 	repoType := model.RepoType(repository["repo_type"].(string))
 	repoURL := ""
 	repoAPIURL := ""
-	if strings.EqualFold(string(repoType), string(RepoTypeValues.GitHub)) {
+	if strings.EqualFold(string(repoType), string(model.RepoTypeValues.GitHub)) {
 		repoURL = fmt.Sprintf("https://github.com/%s.git", repoID)
 		repoName = repoID
 	}

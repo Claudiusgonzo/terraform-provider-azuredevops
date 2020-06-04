@@ -271,11 +271,11 @@ func TestAzureDevOpsBuildDefinition_CITriggers_Bitbucket(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	resourceData := schema.TestResourceDataRaw(t, resourceBuildDefinition().Schema, nil)
+	resourceData := schema.TestResourceDataRaw(t, ResourceBuildDefinition().Schema, nil)
 	flattenBuildDefinition(resourceData, &testBuildDefinitionBitbucketWithCITrigger, testProjectID)
 
 	buildClient := azdosdkmocks.NewMockBuildClient(ctrl)
-	clients := &config.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{BuildClient: buildClient, Ctx: context.Background()}
 
 	expectedArgs := build.CreateDefinitionArgs{Definition: &testBuildDefinitionBitbucketWithCITrigger, Project: &testProjectID}
 
