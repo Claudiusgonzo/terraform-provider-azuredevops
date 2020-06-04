@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/taskagent"
 	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/internal/client"
-	"github.com/microsoft/terraform-provider-azuredevops/azuredevops/utils/config"
 )
 
 // DataAgentPool schema and implementation for agent pool data source
@@ -40,7 +39,7 @@ func dataSourceAgentPoolRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func getAgentPoolByName(clients *config.AggregatedClient, name *string) (*taskagent.TaskAgentPool, error) {
+func getAgentPoolByName(clients *client.AggregatedClient, name *string) (*taskagent.TaskAgentPool, error) {
 	agentPools, err := clients.TaskAgentClient.GetAgentPools(clients.Ctx, taskagent.GetAgentPoolsArgs{
 		PoolName: name,
 	})

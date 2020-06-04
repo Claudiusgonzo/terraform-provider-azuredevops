@@ -56,7 +56,7 @@ func TestGroupDataSource_DoesNotSwallowProjectDescriptorLookupError_NotFound(t *
 	resourceData := createResourceData(t, projectID.String(), "group-name")
 
 	graphClient := azdosdkmocks.NewMockGraphClient(ctrl)
-	clients := &config.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
+	clients := &client.AggregatedClient{GraphClient: graphClient, Ctx: context.Background()}
 
 	expectedArgs := graph.GetDescriptorArgs{StorageKey: &projectID}
 	graphClient.
