@@ -15,6 +15,8 @@ import (
 //	(1) TF can create a project
 //	(2) A data source is added to the configuration, and that data source can find the created project
 func TestAccAzureTfsGitRepositories_DataSource(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 	gitRepoName := testutils.GenerateResourceName()
 	tfConfigStep1 := testutils.HclGitRepoResource(projectName, gitRepoName, "Clean")

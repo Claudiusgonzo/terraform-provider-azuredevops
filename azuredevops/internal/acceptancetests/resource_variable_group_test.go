@@ -21,6 +21,8 @@ import (
 )
 
 func TestAccVariableGroup_CreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 
 	vargroupNameFirst := testutils.GenerateResourceName()
@@ -70,6 +72,8 @@ func TestAccVariableGroup_CreateAndUpdate(t *testing.T) {
 }
 
 func TestAccVariableGroupKeyVault_CreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 
 	vargroupKeyvault := testutils.GenerateResourceName()

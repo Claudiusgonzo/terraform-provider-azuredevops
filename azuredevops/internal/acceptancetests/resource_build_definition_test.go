@@ -20,6 +20,8 @@ import (
 // validates that an apply followed by another apply (i.e., resource update) will be reflected in AzDO and the
 // underlying terraform state.
 func TestAccBuildDefinition_Create_Update_Import(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 	gitRepoName := testutils.GenerateResourceName()
 	buildDefinitionPathEmpty := `\`
@@ -117,6 +119,8 @@ func TestAccBuildDefinition_Create_Update_Import(t *testing.T) {
 
 // Verifies a build for Bitbucket can happen. Note: the update/import logic is tested in other tests
 func TestAccBuildDefinitionBitbucket_Create(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testutils.PreCheck(t, nil) },
@@ -136,6 +140,8 @@ func TestAccBuildDefinitionBitbucket_Create(t *testing.T) {
 
 // Verifies a build for with variables can create and update, including secret variables
 func TestAccBuildDefinition_WithVariables_CreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	name := testutils.GenerateResourceName()
 	tfNode := "azuredevops_build_definition.b"
 

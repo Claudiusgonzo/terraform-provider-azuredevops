@@ -21,6 +21,8 @@ const terraformServiceEndpointNode = "azuredevops_serviceendpoint_kubernetes.ser
 // validates that an apply followed by another apply (i.e., resource update) will be reflected in AzDO and the
 // underlying terraform state.
 func TestAccServiceEndpointKubernetesForAzureSubscriptionCreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	authorizationType := "AzureSubscription"
 
 	var attrTestCheckFuncList []resource.TestCheckFunc
@@ -34,6 +36,8 @@ func TestAccServiceEndpointKubernetesForAzureSubscriptionCreateAndUpdate(t *test
 // validates that an apply followed by another apply (i.e., resource update) will be reflected in AzDO and the
 // underlying terraform state.
 func TestAccServiceEndpointKubernetesForServiceAccountCreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	authorizationType := "ServiceAccount"
 
 	var attrTestCheckFuncList []resource.TestCheckFunc
@@ -48,6 +52,8 @@ func TestAccServiceEndpointKubernetesForServiceAccountCreateAndUpdate(t *testing
 // validates that an apply followed by another apply (i.e., resource update) will be reflected in AzDO and the
 // underlying terraform state.
 func TestAccServiceEndpointKubernetesForKubeconfigCreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	authorizationType := "Kubeconfig"
 
 	var attrTestCheckFuncList []resource.TestCheckFunc

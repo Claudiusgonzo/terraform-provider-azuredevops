@@ -17,6 +17,8 @@ import (
 //	(2) Branch policies can be updated with no errors
 //	(3) Branch policies can be deleted with no errors
 func TestAccBranchPolicy_CreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	projName := testutils.GenerateResourceName()
 	repoName := testutils.GenerateResourceName()
 	opts1 := hclOptions{

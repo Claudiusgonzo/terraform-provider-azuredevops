@@ -12,6 +12,8 @@ import (
 
 // Verifies that the client config data source loads the configured AzDO org
 func TestAccClientConfig_LoadsCorrectProperties(t *testing.T) {
+	t.Parallel()
+
 	tfNode := "data.azuredevops_client_config.c"
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testutils.PreCheck(t, nil) },

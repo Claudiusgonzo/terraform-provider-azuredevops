@@ -16,6 +16,8 @@ import (
 //	(1) TF can create a project
 //	(2) A data source is added to the configuration, and that data source can find the created project
 func TestAccProject_DataSource(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 	projectResource := testutils.HclProjectResource(projectName)
 	projectWithData := fmt.Sprintf("%s\n%s", testutils.HclProjectDataSource(projectName), projectResource)
@@ -43,6 +45,8 @@ func TestAccProject_DataSource(t *testing.T) {
 }
 
 func TestAccProject_DataSource_IncorrectParameters(t *testing.T) {
+	t.Parallel()
+
 	projectName := testutils.GenerateResourceName()
 	dataProject := fmt.Sprintf(`
 	data "azuredevops_project" "project" {
