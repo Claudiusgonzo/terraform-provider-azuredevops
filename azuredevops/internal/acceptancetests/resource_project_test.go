@@ -24,8 +24,6 @@ import (
 // 	(6) TF destroy deletes project
 //	(7) project can no longer be queried by ID
 func TestAccProject_CreateAndUpdate(t *testing.T) {
-	t.Parallel()
-
 	projectNameFirst := testutils.GenerateResourceName()
 	projectNameSecond := testutils.GenerateResourceName()
 	tfNode := "azuredevops_project.project"

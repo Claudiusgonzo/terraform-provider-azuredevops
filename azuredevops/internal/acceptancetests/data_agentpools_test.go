@@ -16,8 +16,6 @@ import (
 //	(2) A data source is added to the configuration, and that data source can find the created project
 
 func TestAccAgentPools_DataSource(t *testing.T) {
-	t.Parallel()
-
 	agentPoolName := testutils.GenerateResourceName()
 	agentPool1Name := agentPoolName + "_1"
 	agentPool2Name := agentPoolName + "_2"

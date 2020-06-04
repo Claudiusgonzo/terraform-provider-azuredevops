@@ -24,8 +24,6 @@ import (
 //	(6) TF destroy deletes agent pool
 //	(7) Agent pool can no longer be queried by ID
 func TestAccAgentPool_CreateAndUpdate(t *testing.T) {
-	t.Parallel()
-
 	poolNameFirst := testutils.GenerateResourceName()
 	poolNameSecond := testutils.GenerateResourceName()
 	tfNode := "azuredevops_agent_pool.pool"

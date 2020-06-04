@@ -12,8 +12,6 @@ import (
 )
 
 func TestAccResourceAuthorization_CRUD(t *testing.T) {
-	t.Parallel()
-
 	projectName := testutils.GenerateResourceName()
 	serviceEndpointName := testutils.GenerateResourceName()
 

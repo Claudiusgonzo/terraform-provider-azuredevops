@@ -164,8 +164,6 @@ func TestAccGitRepo_RepoInitialization_Uninitialized(t *testing.T) {
 
 // Verifies that a newly forked repo does NOT return an empty branch_name
 func TestAccGitRepo_RepoFork_BranchNotEmpty(t *testing.T) {
-	t.Parallel()
-
 	projectName := testutils.GenerateResourceName()
 	gitRepoName := testutils.GenerateResourceName()
 	gitForkedRepoName := testutils.GenerateResourceName()

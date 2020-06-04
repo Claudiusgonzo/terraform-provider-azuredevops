@@ -16,7 +16,6 @@ import (
 )
 
 func TestAccGroupResource_CreateAndUpdate(t *testing.T) {
-	t.Parallel()
 	t.Skip("Skipping test TestAccGroupResource_CreateAndUpdate: transient failures cause inconsistent results: https://github.com/microsoft/terraform-provider-azuredevops/issues/174")
 
 	projectName := testutils.GenerateResourceName()

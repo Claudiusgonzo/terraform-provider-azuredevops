@@ -13,8 +13,6 @@ import (
 // Validates that a configuration containing a project group lookup is able to read the resource correctly.
 // Because this is a data source, there are no resources to inspect in AzDO
 func TestAccGroupDataSource_Read_HappyPath(t *testing.T) {
-	t.Parallel()
-
 	projectName := testutils.GenerateResourceName()
 	group := "Build Administrators"
 	tfBuildDefNode := "data.azuredevops_group.group"

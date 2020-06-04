@@ -43,11 +43,8 @@ test: fmtcheck
 	echo $(TEST) | \
     		xargs -t -n4 go test -tags "all" $(TESTARGS) -timeout=30s -parallel=4
 
-# note: `-parallel` is set to limit the number of concurrent request made to Azure DevOps.
-# 		this parameter can be tuned up or down, but making it too high will result in
-#		incosistent behavior from the service
 testacc: fmtcheck
-	TF_ACC=1 go test -parallel 2 -tags "all" $(TEST) -v $(TESTARGS) -timeout 120m
+	TF_ACC=1 go test -tags "all" $(TEST) -v $(TESTARGS) -timeout 120m
 
 test-compile:
 	@if [ "$(TEST)" = "./..." ]; then \

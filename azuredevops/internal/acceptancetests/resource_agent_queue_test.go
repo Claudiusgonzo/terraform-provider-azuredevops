@@ -11,8 +11,6 @@ import (
 )
 
 func TestAccResourceAgentQueue_CreateAndUpdate(t *testing.T) {
-	t.Parallel()
-
 	projectName := testutils.GenerateResourceName()
 	poolName := testutils.GenerateResourceName()
 	tfNode := "azuredevops_agent_queue.q"

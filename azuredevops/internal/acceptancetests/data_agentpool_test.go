@@ -12,8 +12,6 @@ import (
 )
 
 func TestAccAgentPool_DataSource(t *testing.T) {
-	t.Parallel()
-
 	agentPoolName := testutils.GenerateResourceName()
 	createAgentPool := testutils.HclAgentPoolResource(agentPoolName)
 	createAndGetAgentPoolData := fmt.Sprintf("%s\n%s", createAgentPool, testutils.HclAgentPoolDataSource())
