@@ -206,7 +206,7 @@ func updateProject(clients *config.AggregatedClient, project *core.TeamProject, 
 
 	// project updates may fail if there is activity going on in the project. A retry can be employed
 	// to gracefully handle errors encountered for updates, up until a timeout is reached
-	err := resource.Retry(projectBusyTimeoutDuration, func() *resource.RetryError {
+	err := resource.Retry(projectBusyTimeoutDuration*time.Minute, func() *resource.RetryError {
 		var updateErr error
 		operationRef, updateErr = clients.CoreClient.UpdateProject(
 			clients.Ctx,
@@ -247,7 +247,7 @@ func deleteProject(clients *config.AggregatedClient, id string, timeoutSeconds t
 
 	// project deletes may fail if there is activity going on in the project. A retry can be employed
 	// to gracefully handle errors encountered for deletes, up until a timeout is reached
-	err = resource.Retry(projectBusyTimeoutDuration, func() *resource.RetryError {
+	err = resource.Retry(projectBusyTimeoutDuration*time.Minute, func() *resource.RetryError {
 		var deleteErr error
 		operationRef, deleteErr = clients.CoreClient.QueueDeleteProject(clients.Ctx, core.QueueDeleteProjectArgs{
 			ProjectId: &uuid,
