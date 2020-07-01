@@ -1,3 +1,10 @@
+#We have moved!
+As of June 2020, our new home is https://github.com/terraform-providers/terraform-provider-azuredevops.
+
+For more on this, please see the below posts  
+[Azure DevOps Provider for Terraform](https://cloudblogs.microsoft.com/opensource/2020/06/18/announcing-hashicorp-terraform-azure-devops-provider-release)    
+[Azure DevOps provider document](https://www.terraform.io/docs/providers/azuredevops/index.html)
+
 # Terraform Provider for Azure DevOps (Devops Resource Manager)
 
 [![Gitter](https://badges.gitter.im/terraform-provider-azuredevops/community.svg)](https://gitter.im/terraform-provider-azuredevops/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -181,4 +188,4 @@ The following Environment Variables must be set in your shell prior to running a
 - `AZDO_GITHUB_SERVICE_CONNECTION_PAT`
 - `AZDO_TEST_AAD_USER_EMAIL`
 
-**Note:** Acceptance tests create real resources in Azure DevOps which often cost money to run.
+**Note:** Acceptance tests create real resources in Azure DevOps which often cost money to run.run
